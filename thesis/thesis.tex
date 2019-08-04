@@ -1,0 +1,42 @@
+\input{formatThesisHSCD}
+
+%
+% if printVersion == true  => no hyperlinks are generated
+%                 == false => colored hyperlinks are generated
+%
+\setboolean{printVersion}{false}
+
+%
+% if englishDocument == true  => BABEL english and english dates are used
+%                    == false => BABEL german and german dates are used
+%
+\setboolean{englishDocument}{false}
+
+\newcommand{\studname}{Mustervornamestudent Musternachnamestudent}
+
+\ifthenelse{\boolean{printVersion}}{}{\usepackage[colorlinks=false]{hyperref}}
+\usepackage{cite}
+
+
+\begin{document}
+\ifthenelse{\boolean{englishDocument}}
+{ \selectlanguage{english}
+}
+{ \selectlanguage{german}
+}
+
+\frontmatter
+
+\codesigntitle{Seminararbeit}{Mustertitel der Arbeit}{\studname}{Mustermatrikelnummer}{Bernd Bassimir M. Sc.\\Alexander Raß M. Sc.\\Prof. Dr. Rolf Wanka}
+
+\mainmatter
+\input{demoFile_zusammenfassung}
+\input{demoFile_einleitung}
+\input{demoFile_hauptteil}
+\input{demoFile_fazit}
+
+\appendix
+\ifthenelse{\boolean{englishDocument}}{}{ \renewcommand{\bibname}{Literatur} }
+\bibliographystyle{alpha}
+\bibliography{literature}
+\end{document}
