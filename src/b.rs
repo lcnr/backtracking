@@ -75,6 +75,11 @@ pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
 mod tests {
     use super::*;
 
+    /// a right truncatable prime is a prime number where any number of its trailing digits can be removed
+    /// and the resulting number is still a prime.
+    /// 
+    /// This means that 2339 is right truncatable,
+    /// as 233, 23 and 2 are all primes on their own.
     type RightTruncatablePrime = u32;
     
     impl Sequence for RightTruncatablePrime {
