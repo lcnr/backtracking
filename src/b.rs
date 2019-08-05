@@ -2,12 +2,13 @@
 
 pub trait Sequence {
     type Step;
+    type Steps: Iterator<Item = Self::Step>;
 
     /// does this sequence satisfy its condition.
     fn satisfies_condition(&self) -> bool;
 
     /// generates the current domain.
-    fn next_steps(&self) -> Vec<Self::Step>;
+    fn next_steps(&self) -> Self::Steps;
 
     /// generates all possible next states.
     fn next_states(&self) -> Vec<Self>
@@ -29,7 +30,7 @@ pub trait Sequence {
 
 struct State<T: Sequence> {
     value: T,
-    unchecked_steps: Vec<T::Step>,
+    unchecked_steps: T::Steps,
 }
 
 impl<T: Sequence> State<T> {
@@ -59,7 +60,7 @@ pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
         // take the next unchecked possible step of the current state,
         // in case there are no unchecked steps left, simply discard the current state
         // as all possible sequences have already been tried.
-        if let Some(step) = state.unchecked_steps.pop() {
+        if let Some(step) = state.unchecked_steps.next() {
             // compute the result of this step
             let next_state = state.value.apply_step(step);
             // does this new state still satisfy the condition,
@@ -126,6 +127,10 @@ pub fn w<T: Sequence>(initial: T, n: usize) -> Vec<T> {
 mod tests {
     use super::*;
 
+    use std::ops::Range;
+
+    const BASE: u32 = 10;
+
     /// a right truncatable prime is a prime number where any number of its trailing digits
     /// can be removed and the resulting number is still a prime.
     ///
@@ -136,7 +141,8 @@ mod tests {
     type RightTruncatablePrime = u32;
 
     impl Sequence for RightTruncatablePrime {
-        type Step = char;
+        type Step = u32;
+        type Steps = Range<Self::Step>;
 
         fn satisfies_condition(&self) -> bool {
             // check if `self` is a prime number
@@ -152,12 +158,12 @@ mod tests {
             }
         }
 
-        fn next_steps(&self) -> Vec<Self::Step> {
-            vec!['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+        fn next_steps(&self) -> Self::Steps {
+            1..BASE
         }
 
         fn apply_step(&self, step: Self::Step) -> Self {
-            format!("{}{}", self, step).parse().unwrap()
+            self * BASE + step
         }
     }
 

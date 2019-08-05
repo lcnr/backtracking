@@ -5,3 +5,11 @@ authors = ["lcnr/Bastian Kauschke <bastian_kauschke@hotmail.de>"]
 edition = "2018"
 
 [dependencies]
+primal-bit = "0.2.4"
+
+[dev-dependencies]
+criterion = "0.2"
+
+[[bench]]
+name = "queens"
+harness = false
