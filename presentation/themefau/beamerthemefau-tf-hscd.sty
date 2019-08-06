@@ -1,0 +1,85 @@
+%-------------------------------------------------------------------------------
+% Main file
+%
+% This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
+% International License. To view a copy of this license, visit
+% http://creativecommons.org/licenses/by-sa/4.0/ or send a letter to Creative
+% Commons, PO Box 1866, Mountain View, CA 94042, USA.
+% (C) Oliver Reiche <oliver.reiche@fau.de>
+%-------------------------------------------------------------------------------
+
+\mode<presentation>
+
+
+\usepackage{calc}
+\usepackage{pgf}
+
+
+\newif\ifbeamer@image
+\beamer@imagefalse
+
+\newif\ifbeamer@plain
+\beamer@plainfalse
+
+\newif\ifbeamer@longtitle
+\beamer@longtitlefalse
+
+\DeclareOptionBeamer{image}[true]{%
+  \csname beamer@image#1\endcsname%
+}
+
+\DeclareOptionBeamer{plain}[true]{%
+  \csname beamer@plain#1\endcsname%
+}
+
+\DeclareOptionBeamer{longtitle}[true]{%
+  \csname beamer@longtitle#1\endcsname%
+}
+
+\ProcessOptionsBeamer
+
+
+% Include TechFak FAU theme
+\usetheme[
+  image=\ifbeamer@image true\else false\fi,
+  plain=\ifbeamer@plain true\else false\fi,
+  longtitle=\ifbeamer@longtitle true\else false\fi
+]{fau-tf}
+
+
+% Overload outer and inner theme definitions
+\setbeamertemplate{headline}{%
+  \headlinebody[%
+    \color{normal text.fg}%
+    \pgfuseimage{codesign-small}%
+  ]
+}
+\setbeamertemplate{title page}{%
+  \titlepagebody[%
+    \color{normal text.fg}%
+    \pgfuseimage{codesign-large}%
+  ]{\inserttitle}
+}
+\renewcommand{\sectionpagebody}{%
+  \titlepagebody[%
+    \color{normal text.fg}%
+    \pgfuseimage{codesign-large}%
+  ]{\insertsection}
+}
+
+
+\ifdim \beamer@aspectratio pt=\beamer@fourtothree pt%
+  % Aspect ratio 4:3
+  \pgfdeclareimage[width=1.080cm]{codesign-small}{art/tf/hscd/codesign}
+  \pgfdeclareimage[width=1.651cm]{codesign-large}{art/tf/hscd/codesign}
+\else\ifdim \beamer@aspectratio pt=\beamer@sixteentonine pt%
+  % Aspect ratio 16:9
+  \pgfdeclareimage[width=1.013cm]{codesign-small}{art/tf/hscd/codesign}
+  \pgfdeclareimage[width=1.549cm]{codesign-large}{art/tf/hscd/codesign}
+\else%
+  \errmessage{Any layout other than aspect ratio 4:3 or 16:9 is not supported}
+\fi\fi%
+
+
+\mode
+<all>

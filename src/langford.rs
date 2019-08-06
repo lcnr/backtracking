@@ -75,26 +75,27 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     unused_values.push(0);
 
     let mut undo = vec![0; n * 2];
-
     let mut ptr = 0;
-    let mut value = unused_values[ptr];
 
     loop {
-        while value != 0 && position + value + 1 < x.len() {
-            if x[position + value + 1] == 0 {
-                x[position + value + 1] = -(value as isize);
-                x[position] = value as isize;
+        while unused_values[ptr] != 0 && position + unused_values[ptr] + 1 < x.len() {
+            // check if the current value and its inverse can be inserted, 
+            // update `ptr` to point to the next value otherwise
+            if x[position + unused_values[ptr] + 1] == 0 {
+                // insert both the value at the current position and
+                // the negative value at the right offset
+                x[position + unused_values[ptr] + 1] = -(unused_values[ptr] as isize);
+                x[position] = unused_values[ptr] as isize;
                 undo[position] = ptr;
 
-                // skip `value` from now on
-                // and go one level deeper
-                unused_values[ptr] = unused_values[value];
+                // skip the used value from now on from now on
+                unused_values[ptr] = unused_values[unused_values[ptr]];
+
+                // go one level deeper, starting at the lowest value
                 ptr = 0;
                 position += 1;
 
-                value = unused_values[ptr];
-
-                if value == 0 {
+                if unused_values[ptr] == 0 {
                     results.push(x.clone());
                 } else {
                     while x[position] < 0 {
@@ -102,8 +103,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
                     }
                 }
             } else {
-                ptr = value;
-                value = unused_values[value];
+                ptr = unused_values[ptr];
             }
         }
 
@@ -121,7 +121,6 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
             // add the removed value back into `unused_values`
             unused_values[undo[position]] = removed_value;
             ptr = removed_value;
-            value = unused_values[removed_value];
         } else {
             return results;
         }
