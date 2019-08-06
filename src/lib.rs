@@ -1,6 +1,5 @@
-pub mod queens;
 pub mod langford;
-
+pub mod queens;
 
 /// A required set of methods needed for the generic backtracking algorithms `b` and `w`.
 ///

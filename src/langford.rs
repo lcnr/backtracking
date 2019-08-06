@@ -36,7 +36,9 @@ impl Sequence for LangfordPairsBrute {
     }
 
     fn next_steps(&self) -> Self::Steps {
-        ((-self.n)..=self.n).filter(|&v| v != 0 && !self.values.contains(&v)).collect()
+        ((-self.n)..=self.n)
+            .filter(|&v| v != 0 && !self.values.contains(&v))
+            .collect()
     }
 
     fn next_states(&self) -> Vec<Self> {
@@ -45,10 +47,7 @@ impl Sequence for LangfordPairsBrute {
             if v != 0 && !self.values.contains(&v) {
                 let mut values = self.values.clone();
                 values.push(v);
-                res.push(Self {
-                    n: self.n,
-                    values,
-                })
+                res.push(Self { n: self.n, values })
             }
         }
 
@@ -58,46 +57,12 @@ impl Sequence for LangfordPairsBrute {
     fn apply_step(&self, step: Self::Step) -> Self {
         let mut values = self.values.clone();
         values.push(step);
-        Self {
-            n: self.n,
-            values
-        }
-    }
-}
-
-struct ValueStorage {
-    list: Vec<usize>,
-    previous: usize,
-    curr: usize,
-}
-
-impl ValueStorage {
-    fn new(n: usize) -> Self {
-        // a linked list containing all the currently still unused values
-        // starts as [1, .., n, 0] with a pointer on `unused_values[0]`
-        // in case `2` and `5` are used with `n == 7`, this would be
-        // [1, 3, _, 4, 6, _, 7, 0]. In this state both index `2` and `5` are unreachable.
-        let mut list = (1..=n).collect::<Vec<_>>();
-        list.push(0);
-
-        let previous = 0;
-        let curr = list[previous];
-
-        Self {
-            list,
-            previous,
-            curr,
-        }
-    }
-
-    /// The current value
-    fn value(&self) -> usize {
-        self.list[self.curr]
+        Self { n: self.n, values }
     }
 }
 
 /// solves the langford pairs problem using algorithm L described on page 7 of pre-fascicle 5B.
-/// 
+///
 /// While there are still some ways to improve this algorithm,
 /// it is still a lot faster than using `b` or `w` with `LangfordPairsBrute`.
 pub fn l(n: usize) -> Vec<Vec<isize>> {
@@ -105,7 +70,6 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
 
     let mut x = vec![0; n * 2];
 
-    
     let mut unused_values = (1..=n).collect::<Vec<_>>();
     unused_values.push(0);
 
@@ -115,14 +79,6 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     let mut current = 0;
     let mut value = unused_values[current];
 
-    enum State {
-        L3,
-        L4,
-        L5,
-    }
-
-    let mut state = State::L3;
-    
     loop {
         while value != 0 && position + value + 1 < x.len() {
             if x[position + value + 1] == 0 {
@@ -152,7 +108,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
         }
 
         if position == 0 {
-            return results
+            return results;
         } else {
             position -= 1;
             while x[position] < 0 {
@@ -160,9 +116,11 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
             }
 
             value = x[position] as usize;
+
+            // undo changes to `x`
             x[position] = 0;
             x[position + value + 1] = 0;
-            
+
             unused_values[undo[position]] = value;
             current = value;
             value = unused_values[value];
@@ -180,13 +138,21 @@ mod tests {
     fn four() {
         let solutions = b(LangfordPairsBrute::new(4), 8);
         assert_eq!(solutions.len(), 2);
-        assert!(solutions.iter().any(|s| s.values == [2, 3, 4, -2, 1, -3, -1, -4]));
-        assert!(solutions.iter().any(|s| s.values == [4, 1, 3, -1, 2, -4, -3, -2]));
+        assert!(solutions
+            .iter()
+            .any(|s| s.values == [2, 3, 4, -2, 1, -3, -1, -4]));
+        assert!(solutions
+            .iter()
+            .any(|s| s.values == [4, 1, 3, -1, 2, -4, -3, -2]));
 
         let solutions = w(LangfordPairsBrute::new(4), 8);
         assert_eq!(solutions.len(), 2);
-        assert!(solutions.iter().any(|s| s.values == [2, 3, 4, -2, 1, -3, -1, -4]));
-        assert!(solutions.iter().any(|s| s.values == [4, 1, 3, -1, 2, -4, -3, -2]));
+        assert!(solutions
+            .iter()
+            .any(|s| s.values == [2, 3, 4, -2, 1, -3, -1, -4]));
+        assert!(solutions
+            .iter()
+            .any(|s| s.values == [4, 1, 3, -1, 2, -4, -3, -2]));
 
         let solutions = l(4);
         assert_eq!(solutions.len(), 2);
@@ -196,6 +162,9 @@ mod tests {
 
     #[test]
     fn count() {
-        (1..12).map(|v| l(v).len()).zip(&[0, 0, 2, 2, 0, 0, 52, 300, 0, 0, 35584]).for_each(|(a, &b)| assert_eq!(a, b));
+        (1..12)
+            .map(|v| l(v).len())
+            .zip(&[0, 0, 2, 2, 0, 0, 52, 300, 0, 0, 35584])
+            .for_each(|(a, &b)| assert_eq!(a, b));
     }
 }
