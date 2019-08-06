@@ -71,6 +71,11 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     let mut x = vec![0; n * 2];
     let mut position = 0;
 
+    // A circular linked list with the length `n + 1` containing all currently free values.
+    // Iterating through this list can simply be done with `ptr = unused_values[ptr]`.
+    // 
+    // The initial condition is `[1, 2, .., n, 0]`. If we were to remove the value `2`,
+    // this list is updated to `[1, 3, 3, 4, .., n, 0]`.
     let mut unused_values = (1..=n).collect::<Vec<_>>();
     unused_values.push(0);
 
@@ -86,15 +91,24 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
                 // the negative value at the right offset
                 x[position + unused_values[ptr] + 1] = -(unused_values[ptr] as isize);
                 x[position] = unused_values[ptr] as isize;
-                undo[position] = ptr;
 
                 // skip the used value from now on from now on
+                // update `undo` to allow for a quick backtrack
+                undo[position] = ptr;
                 unused_values[ptr] = unused_values[unused_values[ptr]];
 
-                // go one level deeper, starting at the lowest value
+                // go one level deeper, and reset `ptr`
+                // `unused_values[0]` always points to the lowest available number 
                 ptr = 0;
                 position += 1;
 
+                // Check if there are no more available numbers,
+                // as this means that we have used all of them and
+                // thereby found a solution. We do not have to manually undo
+                // this step in case we found a solution, as `unused_values[ptr] == 0`
+                // automatically breaks the inner loop.
+                //
+                // Skip all already filled positions otherwise.
                 if unused_values[ptr] == 0 {
                     results.push(x.clone());
                 } else {
@@ -108,6 +122,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
         }
 
         if position != 0 {
+            // set `position` to point to the last positive number 
             position -= 1;
             while x[position] < 0 {
                 position -= 1;
@@ -119,7 +134,16 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
             x[position + removed_value + 1] = 0;
 
             // add the removed value back into `unused_values`
+            // this can simply be done by updating the target of the
+            // previous unused variable
+            //
+            // let's say that we previously used `2`, `3` and want to undo `3`.
+            // This means that `1`, which previously pointed at `4`, has to point at `3` again.
+            // [1, 4, 3, 4, 5, 0] -> [1, 2, 3, 4, 5, 0]
             unused_values[undo[position]] = removed_value;
+
+            // update pointer to point at the free value after the one we have just
+            // removed from `x`.
             ptr = removed_value;
         } else {
             return results;
