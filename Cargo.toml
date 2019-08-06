@@ -11,5 +11,5 @@ primal-bit = "0.2.4"
 criterion = "0.2"
 
 [[bench]]
-name = "queens"
+name = "bench"
 harness = false

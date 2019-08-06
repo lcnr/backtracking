@@ -39,6 +39,22 @@ impl Sequence for LangfordPairsBrute {
         ((-self.n)..=self.n).filter(|&v| v != 0 && !self.values.contains(&v)).collect()
     }
 
+    fn next_states(&self) -> Vec<Self> {
+        let mut res = Vec::new();
+        for v in (-self.n)..=self.n {
+            if v != 0 && !self.values.contains(&v) {
+                let mut values = self.values.clone();
+                values.push(v);
+                res.push(Self {
+                    n: self.n,
+                    values,
+                })
+            }
+        }
+
+        res
+    }
+
     fn apply_step(&self, step: Self::Step) -> Self {
         let mut values = self.values.clone();
         values.push(step);
@@ -57,7 +73,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     let mut results = Vec::new();
 
     let mut x = vec![0; n * 2];
-    let mut y = vec![0; n * 2];
+    let mut undo = vec![0; n * 2];
 
     // a linked list containing all the currently still unused values
     // starts as [1, .., n, 0] with a pointer on `unused_values[0]`
@@ -68,7 +84,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
 
     let mut k = 0;
     let mut l = 0;
-    let mut j = 0;
+    let mut current = 0;
 
     enum State {
         L2,
@@ -82,12 +98,12 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     loop {
         state = match state {
             State::L2 => {
-                k = unused_values[0];
+                k = unused_values[current];
                 if k == 0 {
-                    results.push(x.clone());
+                    dbg!(&undo);
+                    results.push(dbg!(x.clone()));
                     State::L5
                 } else {
-                    j = 0;
                     while x[l] < 0 {
                         l += 1;
                     }
@@ -99,11 +115,12 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
                     if *v == 0 {
                         *v = -(k as isize);
                         x[l] = k as isize;
-                        y[l] = j;
+                        undo[l] = current;
 
                         // skip `k` from now on
-                        unused_values[j] = unused_values[k];
+                        unused_values[current] = unused_values[k];
                         l += 1;
+                        current = 0;
                         State::L2
                     } else {
                         State::L4
@@ -114,8 +131,8 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
             }
             State::L4 => {
                 // get the next unused value
-                j = k;
-                k = unused_values[j];
+                current = k;
+                k = unused_values[current];
                 if k == 0 {
                     State::L5
                 } else {
@@ -123,8 +140,10 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
                 }
             }
             State::L5 => {
-                if let Some(new_l) = l.checked_sub(1) {
-                    l = new_l;
+                if l == 0 {
+                    return results
+                } else {
+                    l -= 1;
                     while x[l] < 0 {
                         l -= 1;
                     }
@@ -132,11 +151,10 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
                     k = x[l] as usize;
                     x[l] = 0;
                     x[l + k + 1] = 0;
-                    j = y[l];
-                    unused_values[j] = k;
+                    
+                    current = undo[l];
+                    unused_values[current] = k;
                     State::L4
-                } else {
-                    return results
                 }
             }
         }
@@ -147,7 +165,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
 mod tests {
     use super::*;
 
-    use crate::b;
+    use crate::{b, w};
 
     #[test]
     fn four() {
@@ -156,9 +174,19 @@ mod tests {
         assert!(solutions.iter().any(|s| s.values == [2, 3, 4, -2, 1, -3, -1, -4]));
         assert!(solutions.iter().any(|s| s.values == [4, 1, 3, -1, 2, -4, -3, -2]));
 
+        let solutions = w(LangfordPairsBrute::new(4), 8);
+        assert_eq!(solutions.len(), 2);
+        assert!(solutions.iter().any(|s| s.values == [2, 3, 4, -2, 1, -3, -1, -4]));
+        assert!(solutions.iter().any(|s| s.values == [4, 1, 3, -1, 2, -4, -3, -2]));
+
         let solutions = l(4);
         assert_eq!(solutions.len(), 2);
         assert!(solutions.iter().any(|s| s == &[2, 3, 4, -2, 1, -3, -1, -4]));
         assert!(solutions.iter().any(|s| s == &[4, 1, 3, -1, 2, -4, -3, -2]));
+    }
+
+    #[test]
+    fn count() {
+        assert!((1..12).map(|v| l(v).len()).zip(&[0, 0, 2, 2, 0, 0, 52, 300, 0, 0, 35584]).all(|(a, &b)| a == b));
     }
 }
