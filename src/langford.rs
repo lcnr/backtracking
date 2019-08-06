@@ -65,6 +65,37 @@ impl Sequence for LangfordPairsBrute {
     }
 }
 
+struct ValueStorage {
+    list: Vec<usize>,
+    previous: usize,
+    curr: usize,
+}
+
+impl ValueStorage {
+    fn new(n: usize) -> Self {
+        // a linked list containing all the currently still unused values
+        // starts as [1, .., n, 0] with a pointer on `unused_values[0]`
+        // in case `2` and `5` are used with `n == 7`, this would be
+        // [1, 3, _, 4, 6, _, 7, 0]. In this state both index `2` and `5` are unreachable.
+        let mut list = (1..=n).collect::<Vec<_>>();
+        list.push(0);
+
+        let previous = 0;
+        let curr = list[previous];
+
+        Self {
+            list,
+            previous,
+            curr,
+        }
+    }
+
+    /// The current value
+    fn value(&self) -> usize {
+        self.list[self.curr]
+    }
+}
+
 /// solves the langford pairs problem using algorithm L described on page 7 of pre-fascicle 5B.
 /// 
 /// While there are still some ways to improve this algorithm,
@@ -73,55 +104,52 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     let mut results = Vec::new();
 
     let mut x = vec![0; n * 2];
-    let mut undo = vec![0; n * 2];
 
-    // a linked list containing all the currently still unused values
-    // starts as [1, .., n, 0] with a pointer on `unused_values[0]`
-    // in case `2` and `5` are used with `n == 7`, this would be
-    // [1, 3, _, 4, 6, _, 7, 0]. In this state both index `2` and `5` are unreachable.
+    
     let mut unused_values = (1..=n).collect::<Vec<_>>();
     unused_values.push(0);
 
-    let mut k = 0;
-    let mut l = 0;
+    let mut undo = vec![0; n * 2];
+
+    let mut position = 0;
     let mut current = 0;
+    let mut value = unused_values[current];
 
     enum State {
-        L2,
         L3,
         L4,
         L5,
     }
 
-    let mut state = State::L2;
+    let mut state = State::L3;
     
     loop {
         state = match state {
-            State::L2 => {
-                k = unused_values[current];
-                if k == 0 {
-                    dbg!(&undo);
-                    results.push(dbg!(x.clone()));
-                    State::L5
-                } else {
-                    while x[l] < 0 {
-                        l += 1;
-                    }
-                    State::L3
-                }
-            }
             State::L3 => {
-                if let Some(v) = x.get_mut(l + k + 1) {
-                    if *v == 0 {
-                        *v = -(k as isize);
-                        x[l] = k as isize;
-                        undo[l] = current;
+                if position + value + 1 < x.len() {
+                    if x[position + value + 1] == 0 {
+                        x[position + value + 1] = -(value as isize);
+                        x[position] = value as isize;
+                        undo[position] = current;
 
-                        // skip `k` from now on
-                        unused_values[current] = unused_values[k];
-                        l += 1;
+                        // skip `value` from now on
+                        // and go one level deeper
+                        unused_values[current] = unused_values[value];
                         current = 0;
-                        State::L2
+                        position += 1;
+
+                        value = unused_values[current];
+                        
+
+                        if value == 0 {
+                            results.push(x.clone());
+                            State::L5
+                        } else {
+                            while x[position] < 0 {
+                                position += 1;
+                            }
+                            State::L3
+                        }
                     } else {
                         State::L4
                     }
@@ -130,30 +158,30 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
                 }
             }
             State::L4 => {
-                // get the next unused value
-                current = k;
-                k = unused_values[current];
-                if k == 0 {
+                // get the next unused value at this level
+                current = value;
+                value = unused_values[value];
+                if value == 0 {
                     State::L5
                 } else {
                     State::L3
                 }
             }
             State::L5 => {
-                if l == 0 {
+                if position == 0 {
                     return results
                 } else {
-                    l -= 1;
-                    while x[l] < 0 {
-                        l -= 1;
+                    position -= 1;
+                    while x[position] < 0 {
+                        position -= 1;
                     }
 
-                    k = x[l] as usize;
-                    x[l] = 0;
-                    x[l + k + 1] = 0;
+                    value = x[position] as usize;
+                    x[position] = 0;
+                    x[position + value + 1] = 0;
                     
-                    current = undo[l];
-                    unused_values[current] = k;
+                    current = undo[position];
+                    unused_values[current] = value;
                     State::L4
                 }
             }
