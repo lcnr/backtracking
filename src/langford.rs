@@ -163,7 +163,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
             x[position] = 0;
             x[position + value + 1] = 0;
             
-            unused_values[current] = value;
+            unused_values[undo[position]] = value;
             current = value;
             value = unused_values[value];
         }
