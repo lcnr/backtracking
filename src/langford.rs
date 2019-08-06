@@ -124,67 +124,48 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     let mut state = State::L3;
     
     loop {
-        state = match state {
-            State::L3 => {
-                if position + value + 1 < x.len() {
-                    if x[position + value + 1] == 0 {
-                        x[position + value + 1] = -(value as isize);
-                        x[position] = value as isize;
-                        undo[position] = current;
+        while value != 0 && position + value + 1 < x.len() {
+            if x[position + value + 1] == 0 {
+                x[position + value + 1] = -(value as isize);
+                x[position] = value as isize;
+                undo[position] = current;
 
-                        // skip `value` from now on
-                        // and go one level deeper
-                        unused_values[current] = unused_values[value];
-                        current = 0;
-                        position += 1;
+                // skip `value` from now on
+                // and go one level deeper
+                unused_values[current] = unused_values[value];
+                current = 0;
+                position += 1;
 
-                        value = unused_values[current];
-                        
+                value = unused_values[current];
 
-                        if value == 0 {
-                            results.push(x.clone());
-                            State::L5
-                        } else {
-                            while x[position] < 0 {
-                                position += 1;
-                            }
-                            State::L3
-                        }
-                    } else {
-                        State::L4
-                    }
+                if value == 0 {
+                    results.push(x.clone());
                 } else {
-                    State::L5
+                    while x[position] < 0 {
+                        position += 1;
+                    }
                 }
-            }
-            State::L4 => {
-                // get the next unused value at this level
+            } else {
                 current = value;
                 value = unused_values[value];
-                if value == 0 {
-                    State::L5
-                } else {
-                    State::L3
-                }
             }
-            State::L5 => {
-                if position == 0 {
-                    return results
-                } else {
-                    position -= 1;
-                    while x[position] < 0 {
-                        position -= 1;
-                    }
+        }
 
-                    value = x[position] as usize;
-                    x[position] = 0;
-                    x[position + value + 1] = 0;
-                    
-                    current = undo[position];
-                    unused_values[current] = value;
-                    State::L4
-                }
+        if position == 0 {
+            return results
+        } else {
+            position -= 1;
+            while x[position] < 0 {
+                position -= 1;
             }
+
+            value = x[position] as usize;
+            x[position] = 0;
+            x[position + value + 1] = 0;
+            
+            unused_values[current] = value;
+            current = value;
+            value = unused_values[value];
         }
     }
 }
@@ -215,6 +196,6 @@ mod tests {
 
     #[test]
     fn count() {
-        assert!((1..12).map(|v| l(v).len()).zip(&[0, 0, 2, 2, 0, 0, 52, 300, 0, 0, 35584]).all(|(a, &b)| a == b));
+        (1..12).map(|v| l(v).len()).zip(&[0, 0, 2, 2, 0, 0, 52, 300, 0, 0, 35584]).for_each(|(a, &b)| assert_eq!(a, b));
     }
 }
