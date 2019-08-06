@@ -1,6 +1,6 @@
 //! a solver of the n queens problem using backtracking
 
-use crate::b::Sequence;
+use crate::Sequence;
 
 use primal_bit::BitVec;
 
@@ -55,8 +55,14 @@ impl Sequence for Queens {
 /// This solution is far more efficient than the algorithm b, but can only be used for this exact problem.
 pub fn b_star(n: usize) -> Vec<Queens> {
     let mut results = Vec::new();
+    // currently occupied rows
     let mut a = BitVec::from_elem(n, false);
+    // diagonal lines going downwards.
+    // accessed with `row + column`
     let mut b = BitVec::from_elem(2 * n - 1, false);
+
+    // diagonal lines going to the upwards
+    // accessed with `row + (n - 1) - column`
     let mut c = BitVec::from_elem(2 * n - 1, false);
 
     let mut positions = Vec::new();
@@ -98,7 +104,7 @@ pub fn b_star(n: usize) -> Vec<Queens> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::b::b;
+    use crate::b;
 
     #[test]
     fn four() {

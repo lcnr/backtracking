@@ -3,7 +3,7 @@ extern crate criterion;
 use criterion::{Criterion, ParameterizedBenchmark};
 
 use backtracking::{
-    b::{b, w},
+    b, w,
     queens::{b_star, Queens},
 };
 
