@@ -73,7 +73,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
 
     // A circular linked list with the length `n + 1` containing all currently free values.
     // Iterating through this list can simply be done with `ptr = unused_values[ptr]`.
-    // 
+    //
     // The initial condition is `[1, 2, .., n, 0]`. If we were to remove the value `2`,
     // this list is updated to `[1, 3, 3, 4, .., n, 0]`.
     let mut unused_values = (1..=n).collect::<Vec<_>>();
@@ -84,7 +84,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
 
     loop {
         while unused_values[ptr] != 0 && position + unused_values[ptr] + 1 < x.len() {
-            // check if the current value and its inverse can be inserted, 
+            // check if the current value and its inverse can be inserted,
             // update `ptr` to point to the next value otherwise
             if x[position + unused_values[ptr] + 1] == 0 {
                 // insert both the value at the current position and
@@ -98,7 +98,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
                 unused_values[ptr] = unused_values[unused_values[ptr]];
 
                 // go one level deeper, and reset `ptr`
-                // `unused_values[0]` always points to the lowest available number 
+                // `unused_values[0]` always points to the lowest available number
                 ptr = 0;
                 position += 1;
 
@@ -122,7 +122,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
         }
 
         if position != 0 {
-            // set `position` to point to the last positive number 
+            // set `position` to point to the last positive number
             position -= 1;
             while x[position] < 0 {
                 position -= 1;

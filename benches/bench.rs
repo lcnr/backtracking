@@ -6,7 +6,7 @@ use backtracking::{
     b,
     langford::{l, LangfordPairsBrute},
     queens::{b_star, Queens},
-    w,
+    recursive, w,
 };
 
 fn bench(c: &mut Criterion) {
@@ -17,9 +17,12 @@ fn bench(c: &mut Criterion) {
         ParameterizedBenchmark::new(
             "B",
             |bencher, &i| bencher.iter(|| b(Queens::new(i), i)),
-            1..12,
+            1..9,
         )
         .with_function("W", |bencher, &i| bencher.iter(|| w(Queens::new(i), i)))
+        .with_function("Recursive", |bencher, &i| {
+            bencher.iter(|| recursive(Queens::new(i), i))
+        })
         .with_function("BStar", |bencher, &i| bencher.iter(|| b_star(i))),
     );
 
@@ -32,6 +35,9 @@ fn bench(c: &mut Criterion) {
         )
         .with_function("W", |bencher, &i| {
             bencher.iter(|| w(LangfordPairsBrute::new(i as isize), i * 2))
+        })
+        .with_function("Recursive", |bencher, &i| {
+            bencher.iter(|| recursive(LangfordPairsBrute::new(i as isize), i * 2))
         })
         .with_function("L", |bencher, &i| bencher.iter(|| l(i)))
         .plot_config(plot_config),

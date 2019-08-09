@@ -1,4 +1,4 @@
-//! a solver of the n queens problem using backtracking
+//! solvers for the n queen problem
 
 use crate::Sequence;
 
@@ -55,44 +55,71 @@ impl Sequence for Queens {
 /// This solution is far more efficient than the algorithm b, but can only be used for this exact problem.
 pub fn b_star(n: usize) -> Vec<Queens> {
     let mut results = Vec::new();
-    // currently occupied rows
-    let mut a = BitVec::from_elem(n, false);
-    // diagonal lines going downwards.
-    // accessed with `row + column`
-    let mut b = BitVec::from_elem(2 * n - 1, false);
 
-    // diagonal lines going to the upwards
-    // accessed with `row + (n - 1) - column`
-    let mut c = BitVec::from_elem(2 * n - 1, false);
+    // attacked columns, should be accessed with `column`
+    let mut columns = BitVec::from_elem(n, false);
 
-    let mut positions = Vec::new();
+    // attacked diagonal lines going to the left,
+    // should be accessed with `row + column`
+    //
+    // For `n == 4` this can be visualized as
+    // 
+    // ```plain
+    // 0123
+    // 1234
+    // 2345
+    // 3456
+    // ```
+    let mut left_diagonals = BitVec::from_elem(2 * n - 1, false);
 
-    let mut t = 0;
+    // attacked diagonal lines going to the right,
+    // should be accessed with `column + (n - 1) + row`
+    //
+    // For `n == 4` this can be visualized as
+    // 
+    // ```plain
+    // 3456
+    // 2345
+    // 1234
+    // 0123
+    // ```
+    let mut right_diagonals = BitVec::from_elem(2 * n - 1, false);
+
+    // all currently occupied rows
+    let mut rows = Vec::new();
+    // the currently tried column
+    let mut column = 0;
+
     loop {
-        while t < n {
-            if !(a[t] || b[t + positions.len()] || c[t + n - 1 - positions.len()]) {
-                if positions.len() + 1 < n {
-                    a.set(t, true);
-                    b.set(t + positions.len(), true);
-                    c.set(t + n - 1 - positions.len(), true);
-                    positions.push(t);
-                    t = 0;
+        // test all columns
+        while column < n {
+            // check if the adding the current column would 
+            if !(columns[column]
+                || left_diagonals[column + rows.len()]
+                || right_diagonals[column + n - 1 - rows.len()])
+            {
+                if rows.len() + 1 < n {
+                    columns.set(column, true);
+                    left_diagonals.set(column + rows.len(), true);
+                    right_diagonals.set(column + n - 1 - rows.len(), true);
+                    rows.push(column);
+                    column = 0;
                 } else {
-                    let mut q = positions.clone();
-                    q.push(t);
+                    let mut q = rows.clone();
+                    q.push(column);
                     results.push(Queens { n, rows: q });
-                    t += 1;
+                    column += 1;
                 }
             } else {
-                t += 1;
+                column += 1;
             }
         }
 
-        if let Some(prev) = positions.pop() {
-            c.set(prev + n - 1 - positions.len(), false);
-            b.set(prev + positions.len(), false);
-            a.set(prev, false);
-            t = prev + 1;
+        if let Some(prev) = rows.pop() {
+            right_diagonals.set(prev + n - 1 - rows.len(), false);
+            left_diagonals.set(prev + rows.len(), false);
+            columns.set(prev, false);
+            column = prev + 1;
         } else {
             break;
         }
