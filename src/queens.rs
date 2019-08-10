@@ -65,7 +65,7 @@ pub fn b_star(n: usize) -> Vec<Queens> {
     // should be accessed with `row + column`
     //
     // For `n == 4` this can be visualized as
-    // 
+    //
     // ```plain
     // 0123
     // 1234
@@ -78,7 +78,7 @@ pub fn b_star(n: usize) -> Vec<Queens> {
     // should be accessed with `column + (n - 1) + row`
     //
     // For `n == 4` this can be visualized as
-    // 
+    //
     // ```plain
     // 3456
     // 2345
@@ -95,7 +95,7 @@ pub fn b_star(n: usize) -> Vec<Queens> {
     loop {
         // test all columns
         while column < n {
-            // check if the adding the current column would 
+            // check if the adding the current column would
             if !(columns[column]
                 || left_diagonals[column + rows.len()]
                 || right_diagonals[column + n - 1 - rows.len()])

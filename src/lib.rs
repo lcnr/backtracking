@@ -1,19 +1,19 @@
 pub mod langford;
 pub mod queens;
 
-/// A required set of methods needed for the generic backtracking algorithms `b` and `w`.
+/// A required set of methods needed for the generic backtracking algorithms.
 ///
 /// For every implemented problem in this project, there is at least one implementation of this trait.
 pub trait Sequence {
     type Step;
     type Steps: IntoIterator<Item = Self::Step>;
 
-    /// Returns if this sequence satisfy its condition.
+    /// Checks if this sequence satisfy its condition.
     ///
     /// This function can assume that the  parent of `self` satisfied this condition.
     fn satisfies_condition(&self) -> bool;
 
-    /// generates the current domain.
+    /// generates all possible next steps at this current state.
     fn next_steps(&self) -> Self::Steps;
 
     /// generates all possible next states.
@@ -29,45 +29,30 @@ pub trait Sequence {
 
     /// applies a `step` to `self`, returning the resulting sequence.
     ///
-    /// `self.apply_step(x).satisfies_condition()` must only be true if
-    /// `self.satisfies_condition()` is true.
+    /// this function will only be called if `self.satisfies_condition() == true`.
     fn apply_step(&self, step: Self::Step) -> Self;
 }
 
 /// Recursively solves a backtracking problem using a recursive algorithm
 ///
 /// This is functionally equivalent to algorithm `l`
-pub fn recursive<T: Sequence>(initial: T, n: usize) -> Vec<T> {
-    if initial.satisfies_condition() {
+pub fn recursive<T: Sequence>(current: T, n: usize) -> Vec<T> {
+    if current.satisfies_condition() {
+        // if we are at the desired depth `n`, return the current element
+        // otherwise we return valid sequences containing this partial sequence
         if n == 0 {
-            vec![initial]
+            vec![current]
         } else {
             let mut results = Vec::new();
 
-            for step in initial.next_steps() {
-                results.append(&mut recursive(initial.apply_step(step), n - 1));
+            for step in current.next_steps() {
+                results.append(&mut recursive(current.apply_step(step), n - 1));
             }
 
             results
         }
     } else {
         Vec::new()
-    }
-}
-
-struct State<T: Sequence> {
-    value: T,
-    unchecked_steps: <T::Steps as IntoIterator>::IntoIter,
-}
-
-impl<T: Sequence> State<T> {
-    pub fn new(value: T) -> Self {
-        let unchecked_steps = value.next_steps().into_iter();
-
-        Self {
-            value,
-            unchecked_steps,
-        }
     }
 }
 
@@ -86,16 +71,18 @@ pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
 
     // the current sequence, starts with just the initial state
     let mut states = Vec::new();
-    states.push(State::new(initial));
+
+    let steps = initial.next_steps().into_iter();
+    states.push((initial, steps));
 
     // run while there is still a state with an unchecked possible next step
-    while let Some(state) = states.last_mut() {
+    while let Some((state, steps)) = states.last_mut() {
         // take the next unchecked possible step of the current state,
         // in case there are no unchecked steps left, simply discard the current state
         // as all possible sequences have already been tried.
-        if let Some(step) = state.unchecked_steps.next() {
+        if let Some(step) = steps.next() {
             // compute the result of this step
-            let next_state = state.value.apply_step(step);
+            let next_state = state.apply_step(step);
             // does this new state still satisfy the condition,
             // if not we can simply discard it
             if next_state.satisfies_condition() {
@@ -103,7 +90,8 @@ pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
                 // it is correct and can be added to results.
                 // Otherwise we push it on the stack.
                 if states.len() < n {
-                    states.push(State::new(next_state));
+                    let next_steps = next_state.next_steps().into_iter();
+                    states.push((next_state, next_steps));
                 } else {
                     results.push(next_state);
                 }
