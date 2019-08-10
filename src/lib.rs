@@ -8,7 +8,7 @@ pub trait Sequence {
     type Step;
     type Steps: IntoIterator<Item = Self::Step>;
 
-    /// Checks if this sequence satisfy its condition.
+    /// Checks if this sequence satisfies its condition.
     ///
     /// This function can assume that the  parent of `self` satisfied this condition.
     fn satisfies_condition(&self) -> bool;
