@@ -25,7 +25,9 @@ impl Sequence for Queens {
     type Steps = Range<Self::Step>;
 
     fn satisfies_condition(&self) -> bool {
-        for k in 0..self.rows.len() {
+        if self.rows.len() != 0 {
+            let k = self.rows.len() - 1;
+
             for j in 0..k {
                 let k_col = self.rows[k];
                 let j_col = self.rows[j];
