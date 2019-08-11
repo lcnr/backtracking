@@ -129,11 +129,9 @@ pub fn b_star(n: usize) -> Vec<Queens> {
             columns.set(prev, false);
             column = prev + 1;
         } else {
-            break;
+            return results;
         }
     }
-
-    results
 }
 
 #[cfg(test)]

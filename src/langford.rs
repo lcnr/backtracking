@@ -23,10 +23,10 @@ impl Sequence for LangfordPairsBrute {
         for j in 0..(self.values.len()) {
             let k = self.values[j];
             if k > 0 {
-                let idx = j as isize + k + 1;
+                let idx = j + k as usize + 1;
                 // signed to unsigned cast is twos complement,
                 // so overflow would lead to a huge number which would fail the test
-                if !(idx < self.n * 2 && self.values.get(idx as usize).map_or(true, |&v| v == -k)) {
+                if !(idx < self.n as usize * 2 && self.values.get(idx).map_or(true, |&v| v == -k)) {
                     return false;
                 }
             }
@@ -68,7 +68,7 @@ impl Sequence for LangfordPairsBrute {
 pub fn l(n: usize) -> Vec<Vec<isize>> {
     let mut results = Vec::new();
 
-    let mut x = vec![0; n * 2];
+    let mut sequence = vec![0; n * 2];
     let mut position = 0;
 
     // A circular linked list with the length `n + 1` containing all currently free values.
@@ -83,14 +83,14 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     let mut ptr = 0;
 
     loop {
-        while unused_values[ptr] != 0 && position + unused_values[ptr] + 1 < x.len() {
+        while unused_values[ptr] != 0 && position + unused_values[ptr] + 1 < sequence.len() {
             // check if the current value and its inverse can be inserted,
-            // update `ptr` to point to the next value otherwise
-            if x[position + unused_values[ptr] + 1] == 0 {
+            // update `ptr` to point to the nesequencet value otherwise
+            if sequence[position + unused_values[ptr] + 1] == 0 {
                 // insert both the value at the current position and
                 // the negative value at the right offset
-                x[position + unused_values[ptr] + 1] = -(unused_values[ptr] as isize);
-                x[position] = unused_values[ptr] as isize;
+                sequence[position] = unused_values[ptr] as isize;
+                sequence[position + unused_values[ptr] + 1] = -(unused_values[ptr] as isize);
 
                 // skip the used value from now on from now on
                 // update `undo` to allow for a quick backtrack
@@ -110,9 +110,9 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
                 //
                 // Skip all already filled positions otherwise.
                 if unused_values[ptr] == 0 {
-                    results.push(x.clone());
+                    results.push(sequence.clone());
                 } else {
-                    while x[position] < 0 {
+                    while sequence[position] < 0 {
                         position += 1;
                     }
                 }
@@ -124,14 +124,14 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
         if position != 0 {
             // set `position` to point to the last positive number
             position -= 1;
-            while x[position] < 0 {
+            while sequence[position] < 0 {
                 position -= 1;
             }
 
-            // remove the item at `position` from `x`
-            let removed_value = x[position] as usize;
-            x[position] = 0;
-            x[position + removed_value + 1] = 0;
+            // remove the item at `position` from `sequence`
+            let removed_value = sequence[position] as usize;
+            sequence[position] = 0;
+            sequence[position + removed_value + 1] = 0;
 
             // add the removed value back into `unused_values`
             // this can simply be done by updating the target of the
@@ -143,7 +143,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
             unused_values[undo[position]] = removed_value;
 
             // update pointer to point at the free value after the one we have just
-            // removed from `x`.
+            // removed from `sequence`.
             ptr = removed_value;
         } else {
             return results;

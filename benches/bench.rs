@@ -11,21 +11,18 @@ use backtracking::{
 
 fn bench(c: &mut Criterion) {
     let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
-
     c.bench(
         "Queens",
         ParameterizedBenchmark::new(
             "B",
             |bencher, &i| bencher.iter(|| b(Queens::new(i), i)),
-            1..9,
+            11..13,
         )
-        .with_function("W", |bencher, &i| bencher.iter(|| w(Queens::new(i), i)))
-        .with_function("Recursive", |bencher, &i| {
-            bencher.iter(|| recursive(Queens::new(i), i))
-        })
-        .with_function("BStar", |bencher, &i| bencher.iter(|| b_star(i))),
+        .with_function("BStar", |bencher, &i| bencher.iter(|| b_star(i)))
+        .plot_config(plot_config),
     );
 
+    let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
     c.bench(
         "Langford Pairs",
         ParameterizedBenchmark::new(

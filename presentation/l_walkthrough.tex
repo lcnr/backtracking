@@ -1,0 +1,95 @@
+\begin{frame}[fragile]
+    \begin{minted}{rust}
+pub fn l(n: usize) -> Vec<Vec<isize>> {
+    let mut results = Vec::new();
+
+    let mut sequence = vec![0; n * 2];
+    let mut position = 0;
+
+    let mut unused_values = (1..=n).collect::<Vec<_>>();
+    unused_values.push(0);
+
+    let mut undo = vec![0; n * 2];
+    let mut ptr = 0;
+    // <- we are here
+
+    loop {
+        // ...
+    }
+}
+    \end{minted}
+    $results = [\ ]$\\
+    $sequence = [0, 0, 0, 0, 0, 0]$, $position = 0$\\
+    $unused\_values = [1, 2, 3, 0]$, $ptr = 0$, $unused\_values[ptr] = 1$\\
+    $undo = [0, 0, 0, 0, 0, 0]$
+\end{frame}
+\begin{frame}[fragile]
+    \begin{minted}{rust}
+loop {
+    while unused_values[ptr] != 0 && position + unused_values[ptr] + 1 < sequence.len() {
+        if sequence[position + unused_values[ptr] + 1] == 0 {
+            // <- we are here
+            sequence[position] = unused_values[ptr] as isize;
+            sequence[position + unused_values[ptr] + 1] = -(unused_values[ptr] as isize);
+
+            undo[position] = ptr;
+            unused_values[ptr] = unused_values[unused_values[ptr]];
+            
+            // update position and reset ptr, removed for clarity
+        } else {
+            ptr = unused_values[ptr];
+        }
+    }
+    // backtracking, removed for clarity
+}
+    \end{minted}
+    $sequence = [0, 0, 0, 0, 0, 0]$, $position = 0$\\
+    $unused\_values = [1, 2, 3, 0]$, $ptr = 0$, $unused\_values[ptr] = 1$\\
+    $undo = [0, 0, 0, 0, 0, 0]$
+\end{frame}
+\begin{frame}[fragile]
+    \begin{minted}{rust}
+loop {
+    while unused_values[ptr] != 0 && position + unused_values[ptr] + 1 < sequence.len() {
+        if sequence[position + unused_values[ptr] + 1] == 0 {
+            sequence[position + unused_values[ptr] + 1] = -(unused_values[ptr] as isize);
+            sequence[position] = unused_values[ptr] as isize;
+            // <- we are here
+            undo[position] = ptr;
+            unused_values[ptr] = unused_values[unused_values[ptr]];
+            
+            // update position and reset ptr, removed for clarity
+        } else {
+            ptr = unused_values[ptr];
+        }
+    }
+    // backtracking, removed for clarity
+}
+    \end{minted}
+    $sequence = [1, 0, -1, 0, 0, 0]$, $position = 0$\\
+    $unused\_values = [1, 2, 3, 0]$, $ptr = 0$, $unused\_values[ptr] = 1$\\
+    $undo = [0, 0, 0, 0, 0, 0]$
+\end{frame}
+\begin{frame}[fragile]
+    \begin{minted}{rust}
+loop {
+    while unused_values[ptr] != 0 && position + unused_values[ptr] + 1 < sequence.len() {
+        if sequence[position + unused_values[ptr] + 1] == 0 {
+            sequence[position + unused_values[ptr] + 1] = -(unused_values[ptr] as isize);
+            sequence[position] = unused_values[ptr] as isize;
+
+            undo[position] = ptr;
+            unused_values[ptr] = unused_values[unused_values[ptr]];
+            // <- we are here
+            // update position and reset ptr, removed for clarity
+        } else {
+            ptr = unused_values[ptr];
+        }
+    }
+    // backtracking, removed for clarity
+}
+    \end{minted}
+    $sequence = [1, 0, -1, 0, 0, 0]$, $position = 0$\\
+    $unused\_values = [2, 2, 3, 0]$, $ptr = 0$, $unused\_values[ptr] = 2$\\
+    $undo = [0, 0, 0, 0, 0, 0]$
+\end{frame}
