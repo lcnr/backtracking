@@ -28,7 +28,7 @@ fn bench(c: &mut Criterion) {
         ParameterizedBenchmark::new(
             "B",
             |bencher, &i| bencher.iter(|| b(LangfordPairsBrute::new(i as isize), i * 2)),
-            1..12,
+            1..5,
         )
         .with_function("L", |bencher, &i| bencher.iter(|| l(i)))
         .plot_config(plot_config),
