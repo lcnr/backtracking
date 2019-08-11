@@ -13,6 +13,7 @@
 \usepackage{graphicx}
 \usepackage{minted}
 \usepackage{subcaption}
+\usepackage[export]{adjustbox}
 \usepackage[backend=biber,sorting=none,doi=true,style=ieee]{biblatex}
 
 \setminted{fontsize=\scriptsize}
@@ -131,8 +132,8 @@ pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
   \end{frame}
   \section{n Queens}
     \begin{frame}{Damenproblem}
-      Wie viele Möglichkeiten gibt es $n$ Damen auf einem $n * n$ Schachbrett aufzustellen, dass sich keine zwei Damen schlagen können.
-      Also keine 2 Damen in der selben Zeile, Reihe oder Diagonalen stehen.
+      Wie viele Möglichkeiten gibt es $n$ Damen auf einem $n * n$ Schachbrett aufzustellen, dass sich keine zwei Damen schlagen können, 
+      also keine 2 Damen in der selben Zeile, Reihe oder Diagonalen stehen.
       \begin{figure}[h!]
         \centering
         \begin{subfigure}{0.4\linewidth}
@@ -145,23 +146,364 @@ pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
         \end{subfigure}
         \label{n4}
       \end{figure}
-
     \end{frame}
-    %\pause
+    \begin{frame}{impl Sequence}
+      \begin{center}
+        \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{../img/q4.png}
+      \end{center}
+    \end{frame}
+    \begin{frame}[fragile]{impl Sequence}
+      \begin{minted}[fontsize=\normalsize]{rust}
+pub struct Queens {
+    n: usize,
+    rows: Vec<usize>,
+}
 
-    %\begin{block}{Numbered List of Items}
-    %%  \begin{enumerate}
-     %   \item<2-> one
-     %   \item<3-> two
-     %   \item<4-> three
-     %   \item<5-> \dots
-     % \end{enumerate}
-    %\end{block}
+impl Queens {
+    pub fn new(n: usize) -> Self {
+        Self {
+            n,
+            rows: Vec::new(),
+        }
+    }
+}
+      \end{minted}
+    \end{frame}
+    \begin{frame}[fragile]{impl Sequence}
+\begin{minted}[fontsize=\small]{rust}
+fn satisfies_condition(&self) -> bool {
+    if self.rows.len() == 0 {
+        return true;
+    }
+
+    let k = self.rows.len() - 1;
+
+    for j in 0..k {
+        let k_col = self.rows[k] as isize;
+        let j_col = self.rows[j] as isize;
+
+        if k_col == j_col || (j_col - k_col).abs() as usize == k - j {
+            return false;
+        }
+    }
+    true
+}
+\end{minted}
+    \end{frame}
+    \begin{frame}[fragile]{impl Sequence}
+\begin{minted}[fontsize=\normalsize]{rust}
+fn next_steps(&self) -> Self::Steps {
+    0..self.n
+}
+
+fn apply_step(&self, step: Self::Step) -> Self {
+    let mut rows = self.rows.clone();
+    rows.push(step);
+    Self { n: self.n, rows }
+}
+\end{minted}
+    \end{frame}
+    \begin{frame}[fragile]
+\begin{minted}[fontsize=\normalsize]{rust}
+let results = b(Queens::new(4), 4);
+
+pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
+    let mut results = Vec::new();
+    let mut states = Vec::new();
+
+    let steps = initial.next_steps().into_iter();
+    states.push((initial, steps));
+    // <- we are here
+    // ...
+}
+    \end{minted}
+    \ \\
+    $results = [\ ]$ \\
+    \ \\
+    $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+    \includegraphics[height=\baselineskip / 2]{../img/step0.png},
+    \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+    \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+    \includegraphics[height=\baselineskip / 2]{../img/step3.png}])]$
+  \end{frame}
+  \begin{frame}[fragile]
+    \begin{minted}{rust}
+// ...
+while let Some((state, steps)) = states.last_mut() {
+    if let Some(step) = steps.next() {
+        // <- we are here
+        let next_state = state.apply_step(step);
+        if next_state.satisfies_condition() {
+            if states.len() < n {
+                let next_steps = next_state.next_steps().into_iter();
+                states.push((next_state, next_steps));
+            } else {
+                results.push(next_state);
+            }
+        }
+    } else {
+        states.pop();
+    }
+}
+// ...
+    \end{minted}
+    $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+    \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+    \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+    \includegraphics[height=\baselineskip / 2]{../img/step3.png}])]$
+    \ \\
+    $step = \includegraphics[height=\baselineskip / 2]{../img/step0.png}$
+    \end{frame}
+    \begin{frame}[fragile]
+      \begin{minted}{rust}
+// ...
+while let Some((state, steps)) = states.last_mut() {
+    if let Some(step) = steps.next() {
+        let next_state = state.apply_step(step);
+        // <- we are here
+        if next_state.satisfies_condition() {
+            if states.len() < n {
+                let next_steps = next_state.next_steps().into_iter();
+                states.push((next_state, next_steps));
+            } else {
+                results.push(next_state);
+            }
+        }
+    } else {
+        states.pop();
+    }
+}
+// ...
+      \end{minted}
+      $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+      \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step3.png}])]$
+      \ \\
+      $next\_state = \raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state0.png}}$
+    \end{frame}
+    \begin{frame}[fragile]
+      \begin{minted}{rust}
+// ...
+while let Some((state, steps)) = states.last_mut() {
+    if let Some(step) = steps.next() {
+        let next_state = state.apply_step(step);
+        // our previous position
+        if next_state.satisfies_condition() {
+            if states.len() < n {
+                let next_steps = next_state.next_steps().into_iter();
+                states.push((next_state, next_steps));
+                // <- we are here
+            } else {
+                results.push(next_state);
+            }
+        }
+    } else {
+        states.pop();
+    }
+}
+// ...
+      \end{minted}
+      $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+      \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step3.png}]),
+      (\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state0.png}}, [
+      \includegraphics[height=\baselineskip / 2]{../img/step0.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step3.png}])]$
+    \end{frame}
+    \begin{frame}[fragile]
+      \begin{minted}{rust}
+// ...
+while let Some((state, steps)) = states.last_mut() {
+    if let Some(step) = steps.next() {
+        let next_state = state.apply_step(step);
+        // <- we are here
+        if next_state.satisfies_condition() {
+            if states.len() < n {
+                let next_steps = next_state.next_steps().into_iter();
+                states.push((next_state, next_steps));
+            } else {
+                results.push(next_state);
+            }
+        }
+    } else {
+        states.pop();
+    }
+}
+// ...
+      \end{minted}
+      $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+      \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step3.png}]),
+      (\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state0.png}}, [
+      \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step3.png}])]$ \ \\
+      $next\_state = \raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state00.png}}$
+    \end{frame}
+    \begin{frame}[fragile]
+      \begin{minted}{rust}
+// ...
+while let Some((state, steps)) = states.last_mut() {
+    if let Some(step) = steps.next() {
+        let next_state = state.apply_step(step);
+        // <- we are here
+        if next_state.satisfies_condition() {
+            if states.len() < n {
+                let next_steps = next_state.next_steps().into_iter();
+                states.push((next_state, next_steps));
+            } else {
+                results.push(next_state);
+            }
+        }
+    } else {
+        states.pop();
+    }
+}
+// ...
+      \end{minted}
+      $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+      \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step3.png}]),
+      (\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state0.png}}, [
+      \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step3.png}])]$ \ \\
+      $next\_state = \raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state01.png}}$
+    \end{frame}
+    \begin{frame}[fragile]
+      \begin{minted}{rust}
+// ...
+while let Some((state, steps)) = states.last_mut() {
+    if let Some(step) = steps.next() {
+        let next_state = state.apply_step(step);
+        // <- we are here
+        if next_state.satisfies_condition() {
+            if states.len() < n {
+                let next_steps = next_state.next_steps().into_iter();
+                states.push((next_state, next_steps));
+            } else {
+                results.push(next_state);
+            }
+        }
+    } else {
+        states.pop();
+    }
+}
+// ...
+      \end{minted}
+      $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+      \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+      \includegraphics[height=\baselineskip / 2]{../img/step3.png}]),
+      (\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state0.png}}, [
+      \includegraphics[height=\baselineskip / 2]{../img/step3.png}])]$ \ \\
+      $next\_state = \raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state02.png}}$
+    \end{frame}
+    \begin{frame}[fragile]
+      \begin{minted}{rust}
+while let Some((state, steps)) = states.last_mut() {
+    if let Some(step) = steps.next() {
+        let next_state = state.apply_step(step);
+        if next_state.satisfies_condition() {
+            if states.len() < n {
+                let next_steps = next_state.next_steps().into_iter();
+                states.push((next_state, next_steps));
+                // <- we are here
+            } else {
+                results.push(next_state);
+            }
+        }
+    } else {
+        states.pop();
+    }
+}
+      \end{minted}
+      $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+        \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+        \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+        \includegraphics[height=\baselineskip / 2]{../img/step3.png}]
+      ),
+      (\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state0.png}}, [
+        \includegraphics[height=\baselineskip / 2]{../img/step3.png}]
+      ), \\
+      (\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state02.png}}, [
+        \includegraphics[height=\baselineskip / 2]{../img/step0.png},
+        \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+        \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+        \includegraphics[height=\baselineskip / 2]{../img/step3.png}]
+      )]$ \ \\
+    \end{frame}
+    \begin{frame}[fragile]
+      \begin{minted}{rust}
+while let Some((state, steps)) = states.last_mut() {
+    // <- we are here after discarding all 4 steps
+    if let Some(step) = steps.next() {
+        let next_state = state.apply_step(step);
+        if next_state.satisfies_condition() {
+            if states.len() < n {
+                let next_steps = next_state.next_steps().into_iter();
+                states.push((next_state, next_steps));
+            } else {
+                results.push(next_state);
+            }
+        }
+    } else {
+        states.pop();
+    }
+}
+      \end{minted}
+      $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+        \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+        \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+        \includegraphics[height=\baselineskip / 2]{../img/step3.png}]
+      ),
+      (\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state0.png}}, [
+        \includegraphics[height=\baselineskip / 2]{../img/step3.png}]
+      ),
+      (\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state02.png}}, [\ ])]$ \ \\
+    \end{frame}
+    \begin{frame}[fragile]
+      \begin{minted}{rust}
+  while let Some((state, steps)) = states.last_mut() {
+    if let Some(step) = steps.next() {
+        let next_state = state.apply_step(step);  
+        if next_state.satisfies_condition() {
+            if states.len() < n {
+                let next_steps = next_state.next_steps().into_iter();
+                states.push((next_state, next_steps));
+            } else {
+                results.push(next_state);
+            }
+        }
+    } else {
+        states.pop();
+        // <- we are here
+    }
+  }
+      \end{minted}
+      $states = [(\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/empty.png}}, [
+        \includegraphics[height=\baselineskip / 2]{../img/step1.png},
+        \includegraphics[height=\baselineskip / 2]{../img/step2.png},
+        \includegraphics[height=\baselineskip / 2]{../img/step3.png}]
+      ),
+      (\raisebox{-2ex}{\includegraphics[height=\baselineskip * 2]{../img/state0.png}}, [
+        \includegraphics[height=\baselineskip / 2]{../img/step3.png}]
+      )]$ \ \\
+    \end{frame}
 
   \section{Listings}
   \begin{frame}[fragile]{Listings}
     empty
   \end{frame}
+\section{Listings}
+\begin{frame}[fragile]{Listings}
+  empty
+\end{frame}
 
   { % Questions?
     \setbeamertemplate{footline}{}

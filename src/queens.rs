@@ -30,19 +30,20 @@ impl Sequence for Queens {
     type Steps = Range<Self::Step>;
 
     fn satisfies_condition(&self) -> bool {
-        if self.rows.len() != 0 {
-            let k = self.rows.len() - 1;
-
-            for j in 0..k {
-                let k_col = self.rows[k];
-                let j_col = self.rows[j];
-                // this is identical to `(k_col - j_col).abs() != k - j` without requiring signed integers
-                if k_col == j_col || k_col.max(j_col) - k_col.min(j_col) == k - j {
-                    return false;
-                }
-            }
+        if self.rows.len() == 0 {
+            return true;
         }
 
+        let k = self.rows.len() - 1;
+
+        for j in 0..k {
+            let k_col = self.rows[k] as isize;
+            let j_col = self.rows[j] as isize;
+
+            if k_col == j_col || (j_col - k_col).abs() as usize == k - j {
+                return false;
+            }
+        }
         true
     }
 
