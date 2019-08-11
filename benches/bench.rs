@@ -16,7 +16,7 @@ fn bench(c: &mut Criterion) {
         ParameterizedBenchmark::new(
             "B",
             |bencher, &i| bencher.iter(|| b(Queens::new(i), i)),
-            11..13,
+            1..11,
         )
         .with_function("BStar", |bencher, &i| bencher.iter(|| b_star(i)))
         .plot_config(plot_config),
@@ -28,14 +28,8 @@ fn bench(c: &mut Criterion) {
         ParameterizedBenchmark::new(
             "B",
             |bencher, &i| bencher.iter(|| b(LangfordPairsBrute::new(i as isize), i * 2)),
-            1..5,
+            1..12,
         )
-        .with_function("W", |bencher, &i| {
-            bencher.iter(|| w(LangfordPairsBrute::new(i as isize), i * 2))
-        })
-        .with_function("Recursive", |bencher, &i| {
-            bencher.iter(|| recursive(LangfordPairsBrute::new(i as isize), i * 2))
-        })
         .with_function("L", |bencher, &i| bencher.iter(|| l(i)))
         .plot_config(plot_config),
     );

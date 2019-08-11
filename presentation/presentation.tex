@@ -284,7 +284,7 @@ loop {
   \end{frame}
   \input{bstar_walkthrough.tex}
   \begin{frame}[fragile]{Performance}
-    \includegraphics[width=0.8\textwidth, clip]{../img/lines.pdf}
+    \includegraphics[width=0.8\textwidth, clip]{../img/queens_lines.pdf}
   \end{frame}
 \section{Langford Pairs}
 \begin{frame}{Langford Paare}
@@ -353,20 +353,65 @@ loop {
   \end{minted}
 \end{frame}
 \input{l_walkthrough.tex}
+\begin{frame}[fragile]{Performance}
+  \includegraphics[width=0.8\textwidth, clip]{../img/langford_lines.pdf}
+\end{frame}
+\section{Laufzeit Einschätzung}
+\begin{frame}[fragile]
+  \begin{minted}{rust}
+pub fn e<T: Sequence>(initial: T, n: usize) -> Duration {
+    let mut current = initial;
+
+    let mut estimated_steps = 1;
+    let mut total_length = Duration::from_secs(0);
+
+    for _ in 0..n - 1 {
+        let now = Instant::now();
+
+        let next_states: Vec<_> = current
+            .next_steps()
+            .into_iter()
+            .map(|step| current.apply_step(step))
+            .filter(|state| state.satisfies_condition())
+            .collect();
+
+        total_length += now.elapsed() * estimated_steps;
+        estimated_steps *= next_states.len() as u32;
+        if let Some(next) = next_states.into_iter().choose(&mut thread_rng()) {
+            current = next;
+        } else {
+            break;
+        }
+    }
+    total_length
+}
+  \end{minted}
+\end{frame}
+\begin{frame}[fragile]
+  \begin{minted}{rust}
+pub fn repeated_estimate<T: Sequence + Clone>(
+    initial: T,
+    n: usize,
+    repetitions: u32,
+) -> Duration {
+    let mut total_duration = Duration::from_secs(0);
+
+    for _ in 0..repetitions {
+        total_duration += e(initial.clone(), n);
+    }
+
+    total_duration / repetitions
+}
+  \end{minted}
+\end{frame}
 
   { % Questions?
     \setbeamertemplate{footline}{}
     \begin{frame}[c,noframenumbering]
       \begin{center}
-        Thanks for listening.\\
-        {\bf Any questions?}
+        Vielen Dank für die Aufmerksamkeit.\\
+        {\bf Gibt es noch Fragen?}
       \end{center}
-    \end{frame}
-
-    % References
-    \section*{References}
-    \begin{frame}[allowframebreaks,noframenumbering]{References}
-      \printbibliography
     \end{frame}
   }
 \end{document}

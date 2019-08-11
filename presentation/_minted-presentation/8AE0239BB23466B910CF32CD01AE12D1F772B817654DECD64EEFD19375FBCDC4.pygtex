@@ -1,0 +1,28 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{pub}\PYG{+w}{ }\PYG{k}{fn} \PYG{n+nf}{e}\PYG{o}{\PYGZlt{}}\PYG{n}{T}: \PYG{n+nc}{Sequence}\PYG{o}{\PYGZgt{}}\PYG{p}{(}\PYG{n}{initial}: \PYG{n+nc}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{n}: \PYG{k+kt}{usize}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nc}{Duration}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{current}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{initial}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{estimated\PYGZus{}steps}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{total\PYGZus{}length}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{Duration}::\PYG{n}{from\PYGZus{}secs}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{..}\PYG{n}{n}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{now}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{Instant}::\PYG{n}{now}\PYG{p}{();}
+
+\PYG{+w}{        }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{next\PYGZus{}states}: \PYG{n+nb}{Vec}\PYG{o}{\PYGZlt{}}\PYG{n}{\PYGZus{}}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{current}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{next\PYGZus{}steps}\PYG{p}{()}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{into\PYGZus{}iter}\PYG{p}{()}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{map}\PYG{p}{(}\PYG{o}{|}\PYG{n}{step}\PYG{o}{|}\PYG{+w}{ }\PYG{n}{current}\PYG{p}{.}\PYG{n}{apply\PYGZus{}step}\PYG{p}{(}\PYG{n}{step}\PYG{p}{))}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{o}{|}\PYG{n}{state}\PYG{o}{|}\PYG{+w}{ }\PYG{n}{state}\PYG{p}{.}\PYG{n}{satisfies\PYGZus{}condition}\PYG{p}{())}
+\PYG{+w}{            }\PYG{p}{.}\PYG{n}{collect}\PYG{p}{();}
+
+\PYG{+w}{        }\PYG{n}{total\PYGZus{}length}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{now}\PYG{p}{.}\PYG{n}{elapsed}\PYG{p}{()}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{n}{estimated\PYGZus{}steps}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{estimated\PYGZus{}steps}\PYG{+w}{ }\PYG{o}{*=}\PYG{+w}{ }\PYG{n}{next\PYGZus{}states}\PYG{p}{.}\PYG{n}{len}\PYG{p}{()}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{k+kt}{u32}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{n}{next}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{next\PYGZus{}states}\PYG{p}{.}\PYG{n}{into\PYGZus{}iter}\PYG{p}{().}\PYG{n}{choose}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{thread\PYGZus{}rng}\PYG{p}{())}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{current}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{next}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{break}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n}{total\PYGZus{}length}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
