@@ -62,7 +62,7 @@
 
   { % Outline
     \setbeamertemplate{footline}{}
-    \begin{frame}[noframenumbering]{Outline}
+    \begin{frame}[noframenumbering]{Gliederung}
       \tableofcontents
     \end{frame}
   }
@@ -403,6 +403,39 @@ pub fn repeated_estimate<T: Sequence + Clone>(
     total_duration / repetitions
 }
   \end{minted}
+\end{frame}
+\begin{frame}
+  \begin{center}
+  \begin{tabular}{|| c | c c c c c ||} 
+    \hline
+    n Queens &  6 & 7 & 8 & 9 & 10 \\ [0.5ex] 
+    \hline\hline
+    Estimate &  52.3µs & 286.5µs & 1.9ms & 5.5ms & 30.9ms \\ 
+    \hline
+    Actual & 89.3µs & 260.0µs & 1.7ms & 7.1ms & 39.4ms \\
+    \hline
+   \end{tabular} \\
+   \ \\
+   \begin{tabular}{|| c | c c c c c ||} 
+    \hline
+    n Queens &  11 & 12 & 13 & 14 & 15 \\ [0.5ex] 
+    \hline\hline
+    Estimate & 164.2ms & 967.2ms & 6.0s & 88.9s & 296.0s \\ 
+    \hline
+    Actual & 142.8ms & 925.4ms & 4.3s & 32.1s & 227.5s \\
+    \hline
+   \end{tabular}
+   \ \\
+   \begin{tabular}{|| c | c c c c c ||} 
+    \hline
+    Langford Pairs & 3 & 4 & 5 & 6 & 7 \\ [0.5ex] 
+    \hline\hline
+    Estimate & 89.7µs & 3.8ms & 84.4ms & 2.7s & 145.1s \\ 
+    \hline
+    Actual & 110.5µs & 2.5ms & 82.1s & 1.8s & 86.4s \\
+    \hline
+   \end{tabular}
+  \end{center}
 \end{frame}
 
   { % Questions?

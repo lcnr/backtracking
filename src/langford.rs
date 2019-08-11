@@ -1,5 +1,6 @@
 use crate::Sequence;
 
+#[derive(Clone)]
 pub struct LangfordPairsBrute {
     n: isize,
     values: Vec<isize>,
