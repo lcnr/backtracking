@@ -1,3 +1,4 @@
+pub mod estimate;
 pub mod langford;
 pub mod queens;
 

@@ -6,6 +6,7 @@ use primal_bit::BitVec;
 
 use std::ops::Range;
 
+#[derive(Clone)]
 pub struct Queens {
     n: usize,
     rows: Vec<usize>,
@@ -17,6 +18,10 @@ impl Queens {
             n,
             rows: Vec::new(),
         }
+    }
+
+    pub fn rows(&self) -> usize {
+        self.rows.len()
     }
 }
 
