@@ -1,0 +1,18 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{while}\PYG{+w}{ }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{((}\PYG{n}{state}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{steps}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{states}\PYG{p}{.}\PYG{n}{last\PYGZus{}mut}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{n}{step}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{steps}\PYG{p}{.}\PYG{n}{next}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{next\PYGZus{}state}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{state}\PYG{p}{.}\PYG{n}{apply\PYGZus{}step}\PYG{p}{(}\PYG{n}{step}\PYG{p}{);}
+\PYG{+w}{        }\PYG{c+c1}{// \PYGZlt{}\PYGZhy{} we are here}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{next\PYGZus{}state}\PYG{p}{.}\PYG{n}{satisfies\PYGZus{}condition}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{states}\PYG{p}{.}\PYG{n}{len}\PYG{p}{()}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{next\PYGZus{}steps}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{next\PYGZus{}state}\PYG{p}{.}\PYG{n}{next\PYGZus{}steps}\PYG{p}{().}\PYG{n}{into\PYGZus{}iter}\PYG{p}{();}
+\PYG{+w}{                }\PYG{n}{states}\PYG{p}{.}\PYG{n}{push}\PYG{p}{((}\PYG{n}{next\PYGZus{}state}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{next\PYGZus{}steps}\PYG{p}{));}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{n}{results}\PYG{p}{.}\PYG{n}{push}\PYG{p}{(}\PYG{n}{next\PYGZus{}state}\PYG{p}{);}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{states}\PYG{p}{.}\PYG{n}{pop}\PYG{p}{();}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

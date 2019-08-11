@@ -30,7 +30,7 @@ impl Sequence for Queens {
     type Steps = Range<Self::Step>;
 
     fn satisfies_condition(&self) -> bool {
-        if self.rows.len() == 0 {
+        if self.rows.is_empty() {
             return true;
         }
 
