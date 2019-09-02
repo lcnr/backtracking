@@ -417,7 +417,7 @@ loop {
 }
     \end{minted}
     $sequence = [1, 0, -1, 0, 0, 0]$, $position = 1$\\
-    $unused\_values = [2, 2, 0, 0]$, $ptr = 3$, $unused\_values[ptr] = 2$\\
+    $unused\_values = [2, 2, 0, 0]$, $ptr = 3$, $unused\_values[ptr] = 0$\\
     $undo = [0, 2, 0, 0, 0, 0]$, $removed\_value = 3$
 \end{frame}
 \begin{frame}[fragile]
@@ -446,7 +446,7 @@ loop {
 }
     \end{minted}
     $sequence = [1, 0, -1, 0, 0, 0]$, $position = 1$\\
-    $unused\_values = [2, 2, 3, 0]$, $ptr = 0$, $unused\_values[ptr] = 2$\\
+    $unused\_values = [2, 2, 3, 0]$, $ptr = 3$, $unused\_values[ptr] = 2$\\
     $undo = [0, 2, 0, 0, 0, 0]$, $removed\_value = 3$
 \end{frame}
 \begin{frame}[fragile]

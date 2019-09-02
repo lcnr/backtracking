@@ -72,10 +72,10 @@
   \begin{frame}{Anwendungsbereich}
     Sequenzen $x_{1}, x_{2}, x_{3} \dots x_{n}$ für welche die Bedingung $P_{n}(x_{1}, x_{2}, x_{3} \dots x_{n})$ gilt.\\
     \ \\ 
-    $P$ hat dabei folgende Eigenschaften: \pause
+    $P$ hat dabei folgende Eigenschaften für $0 < l \leq n$: \pause
     \begin{itemize}
       \item $P_{l}(x_{1}, x_{2}, x_{3} \dots x_{l})$ gilt nur, wenn $P_{l-1}(x_{1}, x_{2}, x_{3} \dots x_{l-1})$ gilt \pause
-      \item wenn $P_{l}(x_{1}, x_{2}, x_{3} \dots x_{l})$ gilt, ist $P_{l+1}(x_{1}, x_{2}, x_{3} \dots x_{l+1})$ einfach zu testen \pause
+      \item wenn $P_{l-1}(x_{1}, x_{2}, x_{3} \dots x_{l})$ gilt, ist $P_{l}(x_{1}, x_{2}, x_{3} \dots x_{l+1})$ einfach zu testen \pause
       \item $P_{0}()$ gilt immer
     \end{itemize}
   \end{frame}
