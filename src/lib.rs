@@ -36,6 +36,67 @@ pub trait Sequence {
     fn apply_step(&self, step: Self::Step) -> Self;
 }
 
+/// The error of `RevertableSequence::next_step` once all steps have been tried
+pub struct ExhaustedSequence;
+
+/// A more complex version of the `Sequence` trait, used to unify all implemented algorithms.
+pub trait RevertableSequence {
+    /// applies the next untried step at the current state of the sequence
+    /// in case there is no untried step, this returns an error and does not modify itself.
+    fn next_step(&mut self) -> Result<(), ExhaustedSequence>;
+
+    /// checks if the current sequence is valid under the condition that the
+    /// previous state of `self` was valid.
+    fn is_valid(&self) -> bool;
+
+    /// undoes the last applied step
+    fn undo(&mut self);
+}
+
+pub struct Simple<T: Sequence> {
+    states: Vec<(T, <T::Steps as IntoIterator>::IntoIter)>,
+}
+
+impl<T: Sequence> Simple<T> {
+    pub fn new(initial: T) -> Self {
+        let steps = initial.next_steps();
+        Self {
+            states: vec![(initial, steps.into_iter())],
+        }
+    }
+}
+
+impl<T: Sequence> RevertableSequence for Simple<T> {
+    /// applies the next untried step at the current state of the sequence
+    fn next_step(&mut self) -> Result<(), ExhaustedSequence> {
+        if let Some((state, steps)) = self.states.last_mut() {
+            if let Some(step) = steps.next() {
+                let next_state = state.apply_step(step);
+                let next_steps = next_state.next_steps().into_iter();
+                self.states.push((next_state, next_steps));
+                return Ok(())
+            }
+        }
+
+        Err(ExhaustedSequence)
+    }
+
+    /// checks if the current sequence is valid under the condition that the
+    /// previous state of `self` was valid.
+    fn is_valid(&self) -> bool {
+        if let Some((state, _steps)) = self.states.last() {
+            state.satisfies_condition()
+        } else {
+            true
+        }
+    }
+
+    /// undoes the last applied step
+    fn undo(&mut self) {
+        self.states.pop();
+    }
+}
+
 /// Recursively solves a backtracking problem using a recursive algorithm
 ///
 /// This is functionally equivalent to algorithm `l`
