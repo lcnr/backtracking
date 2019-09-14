@@ -1,0 +1,41 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{impl}\PYG{+w}{ }\PYG{n}{Sequence}\PYG{+w}{ }\PYG{k}{for}\PYG{+w}{ }\PYG{n}{Queens}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{type} \PYG{n+nc}{Step}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k+kt}{usize}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{type} \PYG{n+nc}{Steps}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{Range}\PYG{o}{\PYGZlt{}}\PYG{n}{Self}::\PYG{n}{Step}\PYG{o}{\PYGZgt{}}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{l+s+sd}{/// checks if the most recently placed queen was placed on a free tile}
+\PYG{+w}{    }\PYG{k}{fn} \PYG{n+nf}{satisfies\PYGZus{}condition}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n+nb+bp}{self}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{k+kt}{bool} \PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb+bp}{self}\PYG{p}{.}\PYG{n}{rows}\PYG{p}{.}\PYG{n}{is\PYGZus{}empty}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{true}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{c+c1}{// the row of the last queen}
+\PYG{+w}{        }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb+bp}{self}\PYG{p}{.}\PYG{n}{rows}\PYG{p}{.}\PYG{n}{len}\PYG{p}{()}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+
+\PYG{+w}{        }\PYG{c+c1}{// for all previous queens}
+\PYG{+w}{        }\PYG{k}{for}\PYG{+w}{ }\PYG{n}{j}\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{..}\PYG{n+nb+bp}{self}\PYG{p}{.}\PYG{n}{rows}\PYG{p}{.}\PYG{n}{len}\PYG{p}{()}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{k\PYGZus{}col}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb+bp}{self}\PYG{p}{.}\PYG{n}{rows}\PYG{p}{[}\PYG{n}{k}\PYG{p}{]}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{k+kt}{isize}\PYG{p}{;}
+\PYG{+w}{            }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{j\PYGZus{}col}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb+bp}{self}\PYG{p}{.}\PYG{n}{rows}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{k+kt}{isize}\PYG{p}{;}
+
+\PYG{+w}{            }\PYG{c+c1}{// check if the queen at row `j` shares a column or diagonal}
+\PYG{+w}{            }\PYG{c+c1}{// with the queen at row `k`}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{k\PYGZus{}col}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{j\PYGZus{}col}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{j\PYGZus{}col}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{k\PYGZus{}col}\PYG{p}{).}\PYG{n}{abs}\PYG{p}{()}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{k+kt}{usize}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{j}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{false}\PYG{p}{;}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{k+kc}{true}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{l+s+sd}{/// returns all possible columns}
+\PYG{+w}{    }\PYG{k}{fn} \PYG{n+nf}{next\PYGZus{}steps}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n+nb+bp}{self}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nc}{Self}::\PYG{n}{Steps}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{l+m+mi}{0}\PYG{p}{..}\PYG{n+nb+bp}{self}\PYG{p}{.}\PYG{n}{n}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{l+s+sd}{/// clones `self` and adds the queen at `column` in the next free row}
+\PYG{+w}{    }\PYG{k}{fn} \PYG{n+nf}{apply\PYGZus{}step}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{column}: \PYG{n+nc}{Self}::\PYG{n}{Step}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nc}{Self}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{rows}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb+bp}{self}\PYG{p}{.}\PYG{n}{rows}\PYG{p}{.}\PYG{n}{clone}\PYG{p}{();}
+\PYG{+w}{        }\PYG{n}{rows}\PYG{p}{.}\PYG{n}{push}\PYG{p}{(}\PYG{n}{column}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{Self}\PYG{+w}{ }\PYG{p}{\PYGZob{}}\PYG{+w}{ }\PYG{n}{n}: \PYG{n+nc}{self}\PYG{p}{.}\PYG{n}{n}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{rows}\PYG{+w}{ }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

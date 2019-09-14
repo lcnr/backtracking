@@ -1,6 +1,6 @@
 \chapter{Einleitung}\label{einleitung}
-Viele Probleme lassen sich als eine Sequenz $x_{1}, x_{2}, x_{3} \dots x_{n}$ für 
-welche die Bedingung $P_{n}(x_{1}, x_{2}, x_{3} \dots x_{n})$ gelten soll modelieren.
+Es ist oft möglich Probleme als eine Sequenz $x_{1}, x_{2}, x_{3} \dots x_{n}$ für 
+welche die Bedingung $P_{n}(x_{1}, x_{2}, x_{3} \dots x_{n})$ gelten soll darzustellen.
 Damit Backtracking zu deren Lösung eingesetzt werden kann müssen außerdem noch
 Untereigenschaften $P_{v}(x_{1}, x_{2}, x_{3} \dots x_{v})$ für alle $v \in [ \, 0, n) \,$ 
 mit folgenden Eigenschaften existieren:
@@ -9,3 +9,75 @@ mit folgenden Eigenschaften existieren:
   \item $P_{v + 1}(x_{1}, x_{2}, x_{3} \dots x_{v + 1})$ gilt nur, wenn $P_{v}(x_{1}, x_{2}, x_{3} \dots x_{v})$ gilt
   \item wenn $P_{v}(x_{1}, x_{2}, x_{3} \dots x_{v})$ gilt, ist $P_{v + 1}(x_{1}, x_{2}, x_{3} \dots x_{v+1})$ einfach zu testen
 \end{enumerate}
+
+Somit kann man alle Sequenzen $x_{1}, x_{2}, x_{3} \dots x_{v} \dots x_{q}$ mit $q > v$ ignorieren,
+falls $P_{v}(x_{1}, x_{2}, x_{3} \dots x_{v})$ nicht gilt.
+Der darauf basierende Backtracking Algorithmus(\textbf{B}) kann nun wie folgt implementiert werden:
+\begin{minted}[linenos, fontsize=\small]{rust}
+pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
+    if !initial.satisfies_condition() {
+        return Vec::new();
+    } else if n == 0 {
+        return vec![initial];
+    }
+
+    // all sequences of length n which satisfy the condition
+    let mut results = Vec::new();
+
+    // the current sequence, starts with just the initial state
+    let mut states = Vec::new();
+
+    let steps = initial.next_steps().into_iter();
+    states.push((initial, steps));
+
+    // run while there is still a state with an unchecked possible next step
+    while let Some((state, steps)) = states.last_mut() {
+        // take the next unchecked possible step of the current state,
+        // in case there are no unchecked steps left, simply discard the current state
+        // as all possible sequences have already been tried.
+        if let Some(step) = steps.next() {
+            // compute the result of this step
+            let next_state = state.apply_step(step);
+            // does this new state still satisfy the condition,
+            // if not we can simply discard it
+            if next_state.satisfies_condition() {
+                // if the sequence is already n elements long,
+                // it is correct and can be added to results.
+                // Otherwise we push it onto the stack.
+                if states.len() < n {
+                    let next_steps = next_state.next_steps().into_iter();
+                    states.push((next_state, next_steps));
+                } else {
+                    results.push(next_state);
+                }
+            }
+        } else {
+            states.pop();
+        }
+    }
+
+    results
+}
+\end{minted}
+Um ein Problem mit diesem Algorithmus lösen zu können, benötigt man einen Datentyp welcher den momentanen Zustand
+der Sequenz speichern kann und das folgende Interface implementiert:
+\begin{minted}[linenos, fontsize=\small]{rust}
+/// A required set of methods needed for the generic backtracking algorithms.
+pub trait Sequence {
+    type Step;
+    type Steps: IntoIterator<Item = Self::Step>;
+
+    /// Checks if this sequence satisfies its condition.
+    ///
+    /// This function can assume that the  parent of `self` satisfied this condition.
+    fn satisfies_condition(&self) -> bool;
+
+    /// generates all possible next steps at this current state.
+    fn next_steps(&self) -> Self::Steps;
+
+    /// applies a `step` to `self`, returning the resulting sequence.
+    ///
+    /// this function will only be called if `self.satisfies_condition() == true`.
+    fn apply_step(&self, step: Self::Step) -> Self;
+}
+\end{minted}

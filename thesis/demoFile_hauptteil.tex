@@ -1,8 +1,294 @@
-\chapter{Hauptkapitel 1}
-Hier kommt der Text zum ersten Hauptkapitel.
-\section{Unterkapitel}
-Das ist ein Unterkapitel.
-\subsection{Teilunterkapitel}
-Es geht auch noch eine Ebene mehr.
-\chapter{Hauptkapitel 2}
-Dieser Teil kann auch in einer zusätzlichen Datei ausgelagert werden.
+\chapter{Queens}
+Eines der bekanntesten Anwendungsmöglichkeiten für Backtracking ist das n-Damen Problem.
+Gesucht wird die Anzahl der Möglichkeiten $n$ Damen auf einem $n * n$ Schachbrett aufzustellen, sodass
+keine Dame von einer anderen bedroht wird. Dies ist gegeben, wenn jede Zeile, Reihe und Spalte jeweils von nur einer Dame
+besetzt wird. Abbildung \ref{fig:n4} zeigt sowohl eine korrekte als auch eine inkorrekte Lösung für das Problem.
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.4\linewidth}
+    \includegraphics[width=\linewidth]{queensRight.png}
+    \caption{Richtig}
+  \end{subfigure}
+  \begin{subfigure}{0.4\linewidth}
+    \includegraphics[width=\linewidth]{queensWrong.png}
+    \caption{Falsch}
+  \end{subfigure}
+  \caption{n-Damen Problem}
+  \label{fig:n4}
+\end{figure}
+
+\section{Implementierung}
+Für eine korrekte Lösung dürfen keine 2 Damen in der selben Reihe sein. Eine Mögliche Implementierung ist somit ein Liste in welcher der Eintrag
+$n$ die Position der Dame in der $n$-ten Reihe representiert. Der Initialzustand beim Backtracking ist ein leeres Schachbrett.
+\begin{minted}[linenos]{rust}
+pub struct Queens {
+    /// dimension of the chessboard
+    n: usize,
+    /// currently occupied rows
+    rows: Vec<usize>,
+}
+  
+impl Queens {
+    /// creates a new empty chess board of size `n`
+    pub fn new(n: usize) -> Self {
+        Self {
+            n,
+            rows: Vec::new(),
+        }
+    }
+}
+\end{minted}
+Um diese Struktur nun in Algorithmus \textbf{B} zu verwenden, muss noch \mintinline{rust}{trait Sequence} implementiert werden:
+\begin{minted}[linenos]{rust}
+impl Sequence for Queens {
+    type Step = usize;
+    type Steps = Range<Self::Step>;
+
+    /// checks if the most recently placed queen was placed on a free tile
+    fn satisfies_condition(&self) -> bool {
+        if self.rows.is_empty() {
+            return true;
+        }
+
+        // the row of the last queen
+        let k = self.rows.len() - 1;
+
+        // for all previous queens
+        for j in 0..self.rows.len() - 1 {
+            let k_col = self.rows[k] as isize;
+            let j_col = self.rows[j] as isize;
+
+            // check if the queen at row `j` shares a column or diagonal
+            // with the queen at row `k`
+            if k_col == j_col || (j_col - k_col).abs() as usize == k - j {
+                return false;
+            }
+        }
+        true
+    }
+
+    /// returns all possible columns
+    fn next_steps(&self) -> Self::Steps {
+        0..self.n
+    }
+
+    /// clones `self` and adds the queen at `column` in the next free row
+    fn apply_step(&self, column: Self::Step) -> Self {
+        let mut rows = self.rows.clone();
+        rows.push(column);
+        Self { n: self.n, rows }
+    }
+}
+\end{minted}
+Nun kann man Algorithmus \textbf{B} zum Lösen des $n$-Damen Problems verwenden:
+\begin{minted}{rust}
+let results = b(Queens::new(4), 4);
+\end{minted}
+\section{B*}
+Es gibt noch viele Möglichkeiten diese Lösung zu optimieren. Knuth verwendet einige davon im Algorithmus \textbf{B*}\cite[p. 4]{TAOCP}.
+\subsection{Bitsets}
+Die bisherige Lösung muss bei jeder neuen Dame alle vorherigen Damen einzeln überprüfen. Eine 
+andere Option ist für jede Spalte und Diagonale zu speichern, ob sie momentan besetzt ist. Dies benötigt etwas mehr Speicherplatz,
+reduziert aber die Anzahl der benötigten Speicherzugriffe gewaltig. Das kann durch 3 Bitsets
+mit der Verteilung aus Abbildung \ref{bitsets} implementiert werden.
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.3\linewidth}
+    \includegraphics[width=\linewidth]{../img/columns.png}
+    \caption{Spalten}
+  \end{subfigure}
+  \begin{subfigure}{0.3\linewidth}
+    \includegraphics[width=\linewidth]{../img/left_diagonals.png}
+    \caption{Gegendiagonale}
+  \end{subfigure}
+  \begin{subfigure}{0.3\linewidth}
+    \includegraphics[width=\linewidth]{../img/right_diagonals.png}
+    \caption{Hauptdiagonale}
+  \end{subfigure}
+  \caption{Bitsets}
+  \label{bitsets}
+\end{figure}
+
+\subsection{Speicherwiederverwendung}
+Da \mintinline{rust}{trait Sequence} bei jedem Schritt eine neues Object benötigt, kann das
+Schachbrett leider nicht wiederverwendet werden. Indem man die zuletzt verwendete Dame beim Backtracking
+wieder entfernt, wird insgesamt nur ein Array benötigt und man spart sehr viel Zeit und verhindert Cachemisses.
+
+\subsection{Implementierung}
+\begin{minted}[fontsize=\small, linenos]{rust}
+pub fn b_star(n: usize) -> Vec<Queens> {
+    let mut results = Vec::new();
+
+    // attacked columns, should be accessed with `column`
+    let mut columns = BitVec::from_elem(n, false);
+
+    // attacked diagonal lines going to the bottom left,
+    // should be accessed with `row + column`
+    let mut left_diagonals = BitVec::from_elem(2 * n - 1, false);
+
+    // attacked diagonal lines going to the bottom right,
+    // should be accessed with `column + (n - 1) + row`
+    let mut right_diagonals = BitVec::from_elem(2 * n - 1, false);
+
+    // all currently occupied rows
+    let mut rows = Vec::new();
+    // the currently tried column
+    let mut column = 0;
+
+    loop {
+        // test all possible columns
+        while column < n {
+            // check if the adding the current position is on an
+            // already occupied column or diagonal
+            if !(columns[column]
+                || left_diagonals[column + rows.len()]
+                || right_diagonals[column + n - 1 - rows.len()])
+            {
+                if rows.len() + 1 < n {
+                    columns.set(column, true);
+                    left_diagonals.set(column + rows.len(), true);
+                    right_diagonals.set(column + n - 1 - rows.len(), true);
+                    rows.push(column);
+                    column = 0;
+                } else {
+                    // add the new state to results,
+                    // do not bother to update attacked columns and diagonals,
+                    // as these changes would have to be instantly reverted anyways
+                    let mut q = rows.clone();
+                    q.push(column);
+                    results.push(Queens { n, rows: q });
+                    column += 1;
+                }
+            } else {
+                column += 1;
+            }
+        }
+
+        // revert the last step, updating `column`
+        if let Some(prev) = rows.pop() {
+            right_diagonals.set(prev + n - 1 - rows.len(), false);
+            left_diagonals.set(prev + rows.len(), false);
+            columns.set(prev, false);
+            column = prev + 1;
+        } else {
+            return results;
+        }
+    }
+}
+\end{minted}
+
+\chapter{Langford Pairs}
+Wir suchen mach allen Permutationen der Menge $M = \{1, -1, 2, -2, \dots, n, -n\}$ für die gilt $x_l = p \Rightarrow x_{l+p+1} = -p$.
+Eine der 2 möglichen Lösung für $n = 4$ ist in Abbildung \ref{langford} zu sehen.
+\begin{figure}
+  \centering
+  \includesvg[width=\linewidth]{../img/Langford_pairing}
+  \caption{{Langford Pairs \cite{WikipediaEN:LFP}}}
+  \label{langford}
+\end{figure}
+Während es auch hier simpel ist Algorithmus \textbf{B} für dieses Problem zu verwenden\cite[{src/langford.rs}]{Kauschke}, gibt es einige
+Möglichkeiten um die Berechnung zu beschleunigen.
+
+\section{Verwendete Optimisierungen}
+Wie schon beim $n$-Damen Problem kann auch hier das Kopieren des Zustands umgangen werden. Um effizient auf noch nicht
+verwendete Elemente zuzugreifen, werden die Arrays \mintinline{rust}{unused_values} und \mintinline{rust}{undo} verwendet.
+Es ist außerdem möglich nur die positiven Elemente zu testen und immer automatisch das Inverse Element an der zugehörigen Stelle zu
+plazieren.
+
+\section{Implementierung}
+\begin{minted}[fontsize=\small, linenos]{rust}
+pub fn l(n: usize) -> Vec<Vec<isize>> {
+    let mut results = Vec::new();
+
+    let mut sequence = vec![0; n * 2];
+    let mut position = 0;
+
+    // A circular linked list of the length `n + 1` containing all
+    // currently free values. Iterating through this list can simply be
+    // done with `ptr = unused_values[ptr]`.
+    //
+    // The initial condition is `[1, 2, .., n, 0]`.
+    // If we were to remove the value `2`, this list is updated to
+    // `[1, 3, 3, 4, .., n, 0]`, causing the index `2` to be unreachable
+    let mut unused_values = (1..=n).collect::<Vec<_>>();
+    unused_values.push(0);
+
+    let mut undo = vec![0; n * 2];
+    let mut ptr = 0;
+
+    loop {
+        // do not test elements where the inverse would be out of bounds
+        while unused_values[ptr] != 0
+            && position + unused_values[ptr] + 1 < sequence.len() 
+        {
+            // check if the current value and its inverse can be inserted,
+            // update `ptr` to point to the next value otherwise
+            if sequence[position + unused_values[ptr] + 1] == 0 {
+                // insert both the value at the current position and
+                // the negative value at the right offset
+                sequence[position] = unused_values[ptr] as isize;
+                sequence[position + unused_values[ptr] + 1] =
+                    -(unused_values[ptr] as isize);
+
+                // skip the used value from now on from now on
+                // update `undo` to allow for a quick backtrack
+                undo[position] = ptr;
+                unused_values[ptr] = unused_values[unused_values[ptr]];
+
+                // go one level deeper, and reset `ptr`
+                // `unused_values[0]` always points to the lowest available number
+                ptr = 0;
+                position += 1;
+
+                // Check if there are no more available numbers,
+                // as this means that we have used all of them and
+                // thereby found a solution. We do not have to manually undo
+                // this step in case we found a solution, as 
+                // `unused_values[ptr] == 0` automatically breaks the inner loop.
+                //
+                // Skip all already filled positions otherwise.
+                if unused_values[ptr] == 0 {
+                    results.push(sequence.clone());
+                } else {
+                    while sequence[position] < 0 {
+                        position += 1;
+                    }
+                }
+            } else {
+                ptr = unused_values[ptr];
+            }
+        }
+
+        if position != 0 {
+            // set `position` to point to the last positive number
+            position -= 1;
+            while sequence[position] < 0 {
+                position -= 1;
+            }
+
+            // remove the item at `position` from `sequence`
+            let removed_value = sequence[position] as usize;
+            sequence[position] = 0;
+            sequence[position + removed_value + 1] = 0;
+
+            // add the removed value back into `unused_values`
+            // this can simply be done by updating the target of the
+            // previous unused variable
+            //
+            // # Example
+            //
+            // that we previously used `2`, `3` and want to undo `3`.
+            // This means that the index `1`, which previously pointed at `4`, 
+            // has to point at index `3` again.
+            // [1, 4, 3, 4, 5, 0] -> [1, 2, 3, 4, 5, 0]
+            unused_values[undo[position]] = removed_value;
+
+            // update pointer to point at the free value after the one we have just
+            // removed from `sequence`.
+            ptr = removed_value;
+        } else {
+            return results;
+        }
+    }
+}
+\end{minted}

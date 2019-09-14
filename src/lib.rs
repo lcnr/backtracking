@@ -74,7 +74,7 @@ impl<T: Sequence> RevertableSequence for Simple<T> {
                 let next_state = state.apply_step(step);
                 let next_steps = next_state.next_steps().into_iter();
                 self.states.push((next_state, next_steps));
-                return Ok(())
+                return Ok(());
             }
         }
 
@@ -152,7 +152,7 @@ pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
             if next_state.satisfies_condition() {
                 // if the sequence is already n elements long,
                 // it is correct and can be added to results.
-                // Otherwise we push it on the stack.
+                // Otherwise we push it onto the stack.
                 if states.len() < n {
                     let next_steps = next_state.next_steps().into_iter();
                     states.push((next_state, next_steps));

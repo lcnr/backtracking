@@ -8,20 +8,19 @@ use std::ops::Range;
 
 #[derive(Clone)]
 pub struct Queens {
+    /// dimension of the chessboard
     n: usize,
+    /// currently occupied rows
     rows: Vec<usize>,
 }
 
 impl Queens {
+    /// creates a new empty chess board of size `n`
     pub fn new(n: usize) -> Self {
         Self {
             n,
             rows: Vec::new(),
         }
-    }
-
-    pub fn rows(&self) -> usize {
-        self.rows.len()
     }
 }
 
@@ -29,17 +28,22 @@ impl Sequence for Queens {
     type Step = usize;
     type Steps = Range<Self::Step>;
 
+    /// checks if the most recently placed queen was placed on a free tile
     fn satisfies_condition(&self) -> bool {
         if self.rows.is_empty() {
             return true;
         }
 
+        // the row of the last queen
         let k = self.rows.len() - 1;
 
-        for j in 0..k {
+        // for all previous queens
+        for j in 0..self.rows.len() - 1 {
             let k_col = self.rows[k] as isize;
             let j_col = self.rows[j] as isize;
 
+            // check if the queen at row `j` shares a column or diagonal
+            // with the queen at row `k`
             if k_col == j_col || (j_col - k_col).abs() as usize == k - j {
                 return false;
             }
@@ -47,13 +51,15 @@ impl Sequence for Queens {
         true
     }
 
+    /// returns all possible columns
     fn next_steps(&self) -> Self::Steps {
         0..self.n
     }
 
-    fn apply_step(&self, step: Self::Step) -> Self {
+    /// clones `self` and adds the queen at `column` in the next free row
+    fn apply_step(&self, column: Self::Step) -> Self {
         let mut rows = self.rows.clone();
-        rows.push(step);
+        rows.push(column);
         Self { n: self.n, rows }
     }
 }
@@ -99,9 +105,10 @@ pub fn b_star(n: usize) -> Vec<Queens> {
     let mut column = 0;
 
     loop {
-        // test all columns
+        // test all possible columns
         while column < n {
-            // check if the adding the current column would
+            // check if the adding the current position is on an
+            // already occupied column or diagonal
             if !(columns[column]
                 || left_diagonals[column + rows.len()]
                 || right_diagonals[column + n - 1 - rows.len()])
@@ -113,6 +120,9 @@ pub fn b_star(n: usize) -> Vec<Queens> {
                     rows.push(column);
                     column = 0;
                 } else {
+                    // add the new state to results,
+                    // do not bother to update attacked columns and diagonals,
+                    // as these changes would have to be instantly reverted anyways
                     let mut q = rows.clone();
                     q.push(column);
                     results.push(Queens { n, rows: q });
@@ -123,6 +133,7 @@ pub fn b_star(n: usize) -> Vec<Queens> {
             }
         }
 
+        // revert the last step, updating `column`
         if let Some(prev) = rows.pop() {
             right_diagonals.set(prev + n - 1 - rows.len(), false);
             left_diagonals.set(prev + rows.len(), false);

@@ -1,0 +1,96 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{pub}\PYG{+w}{ }\PYG{k}{fn} \PYG{n+nf}{l}\PYG{p}{(}\PYG{n}{n}: \PYG{k+kt}{usize}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nb}{Vec}\PYG{o}{\PYGZlt{}}\PYG{n+nb}{Vec}\PYG{o}{\PYGZlt{}}\PYG{k+kt}{isize}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{results}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{Vec}::\PYG{n}{new}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{sequence}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{vec}\PYG{o}{!}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{];}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{position}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{c+c1}{// A circular linked list of the length `n + 1` containing all}
+\PYG{+w}{    }\PYG{c+c1}{// currently free values. Iterating through this list can simply be}
+\PYG{+w}{    }\PYG{c+c1}{// done with `ptr = unused\PYGZus{}values[ptr]`.}
+\PYG{+w}{    }\PYG{c+c1}{//}
+\PYG{+w}{    }\PYG{c+c1}{// The initial condition is `[1, 2, .., n, 0]`.}
+\PYG{+w}{    }\PYG{c+c1}{// If we were to remove the value `2`, this list is updated to}
+\PYG{+w}{    }\PYG{c+c1}{// `[1, 3, 3, 4, .., n, 0]`, causing the index `2` to be unreachable}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{unused\PYGZus{}values}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{..}\PYG{o}{=}\PYG{n}{n}\PYG{p}{).}\PYG{n}{collect}::\PYG{o}{\PYGZlt{}}\PYG{n+nb}{Vec}\PYG{o}{\PYGZlt{}}\PYG{n}{\PYGZus{}}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{unused\PYGZus{}values}\PYG{p}{.}\PYG{n}{push}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{);}
+
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{undo}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{vec}\PYG{o}{!}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{];}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{ptr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{k}{loop}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{c+c1}{// do not test elements where the inverse would be out of bounds}
+\PYG{+w}{        }\PYG{k}{while}\PYG{+w}{ }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{l+m+mi}{0}
+\PYG{+w}{            }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{position}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{sequence}\PYG{p}{.}\PYG{n}{len}\PYG{p}{()}
+\PYG{+w}{        }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{c+c1}{// check if the current value and its inverse can be inserted,}
+\PYG{+w}{            }\PYG{c+c1}{// update `ptr` to point to the next value otherwise}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{sequence}\PYG{p}{[}\PYG{n}{position}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{c+c1}{// insert both the value at the current position and}
+\PYG{+w}{                }\PYG{c+c1}{// the negative value at the right offset}
+\PYG{+w}{                }\PYG{n}{sequence}\PYG{p}{[}\PYG{n}{position}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{]}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{k+kt}{isize}\PYG{p}{;}
+\PYG{+w}{                }\PYG{n}{sequence}\PYG{p}{[}\PYG{n}{position}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}
+\PYG{+w}{                    }\PYG{o}{\PYGZhy{}}\PYG{p}{(}\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{]}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{k+kt}{isize}\PYG{p}{);}
+
+\PYG{+w}{                }\PYG{c+c1}{// skip the used value from now on from now on}
+\PYG{+w}{                }\PYG{c+c1}{// update `undo` to allow for a quick backtrack}
+\PYG{+w}{                }\PYG{n}{undo}\PYG{p}{[}\PYG{n}{position}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{ptr}\PYG{p}{;}
+\PYG{+w}{                }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{]];}
+
+\PYG{+w}{                }\PYG{c+c1}{// go one level deeper, and reset `ptr`}
+\PYG{+w}{                }\PYG{c+c1}{// `unused\PYGZus{}values[0]` always points to the lowest available number}
+\PYG{+w}{                }\PYG{n}{ptr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{                }\PYG{n}{position}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+
+\PYG{+w}{                }\PYG{c+c1}{// Check if there are no more available numbers,}
+\PYG{+w}{                }\PYG{c+c1}{// as this means that we have used all of them and}
+\PYG{+w}{                }\PYG{c+c1}{// thereby found a solution. We do not have to manually undo}
+\PYG{+w}{                }\PYG{c+c1}{// this step in case we found a solution, as}
+\PYG{+w}{                }\PYG{c+c1}{// `unused\PYGZus{}values[ptr] == 0` automatically breaks the inner loop.}
+\PYG{+w}{                }\PYG{c+c1}{//}
+\PYG{+w}{                }\PYG{c+c1}{// Skip all already filled positions otherwise.}
+\PYG{+w}{                }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                    }\PYG{n}{results}\PYG{p}{.}\PYG{n}{push}\PYG{p}{(}\PYG{n}{sequence}\PYG{p}{.}\PYG{n}{clone}\PYG{p}{());}
+\PYG{+w}{                }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                    }\PYG{k}{while}\PYG{+w}{ }\PYG{n}{sequence}\PYG{p}{[}\PYG{n}{position}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                        }\PYG{n}{position}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{                    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{                }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{n}{ptr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{ptr}\PYG{p}{];}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{position}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{c+c1}{// set `position` to point to the last positive number}
+\PYG{+w}{            }\PYG{n}{position}\PYG{+w}{ }\PYG{o}{\PYGZhy{}=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{            }\PYG{k}{while}\PYG{+w}{ }\PYG{n}{sequence}\PYG{p}{[}\PYG{n}{position}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{n}{position}\PYG{+w}{ }\PYG{o}{\PYGZhy{}=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{            }\PYG{c+c1}{// remove the item at `position` from `sequence`}
+\PYG{+w}{            }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{removed\PYGZus{}value}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{sequence}\PYG{p}{[}\PYG{n}{position}\PYG{p}{]}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{k+kt}{usize}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{sequence}\PYG{p}{[}\PYG{n}{position}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{sequence}\PYG{p}{[}\PYG{n}{position}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{removed\PYGZus{}value}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{;}
+
+\PYG{+w}{            }\PYG{c+c1}{// add the removed value back into `unused\PYGZus{}values`}
+\PYG{+w}{            }\PYG{c+c1}{// this can simply be done by updating the target of the}
+\PYG{+w}{            }\PYG{c+c1}{// previous unused variable}
+\PYG{+w}{            }\PYG{c+c1}{//}
+\PYG{+w}{            }\PYG{c+c1}{// \PYGZsh{} Example}
+\PYG{+w}{            }\PYG{c+c1}{//}
+\PYG{+w}{            }\PYG{c+c1}{// that we previously used `2`, `3` and want to undo `3`.}
+\PYG{+w}{            }\PYG{c+c1}{// This means that the index `1`, which previously pointed at `4`,}
+\PYG{+w}{            }\PYG{c+c1}{// has to point at index `3` again.}
+\PYG{+w}{            }\PYG{c+c1}{// [1, 4, 3, 4, 5, 0] \PYGZhy{}\PYGZgt{} [1, 2, 3, 4, 5, 0]}
+\PYG{+w}{            }\PYG{n}{unused\PYGZus{}values}\PYG{p}{[}\PYG{n}{undo}\PYG{p}{[}\PYG{n}{position}\PYG{p}{]]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{removed\PYGZus{}value}\PYG{p}{;}
+
+\PYG{+w}{            }\PYG{c+c1}{// update pointer to point at the free value after the one we have just}
+\PYG{+w}{            }\PYG{c+c1}{// removed from `sequence`.}
+\PYG{+w}{            }\PYG{n}{ptr}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{removed\PYGZus{}value}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{results}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

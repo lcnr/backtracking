@@ -12,6 +12,13 @@
 %
 \setboolean{englishDocument}{false}
 
+\usepackage{minted}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{svg}
+\graphicspath{ {../img/} }
+
 \newcommand{\studname}{Bastian Kauschke}
 
 \ifthenelse{\boolean{printVersion}}{}{\usepackage[colorlinks=false]{hyperref}}
@@ -38,5 +45,5 @@
 \appendix
 \ifthenelse{\boolean{englishDocument}}{}{ \renewcommand{\bibname}{Literatur} }
 \bibliographystyle{alpha}
-\bibliography{literature}
+\bibliography{literature.bib}
 \end{document}

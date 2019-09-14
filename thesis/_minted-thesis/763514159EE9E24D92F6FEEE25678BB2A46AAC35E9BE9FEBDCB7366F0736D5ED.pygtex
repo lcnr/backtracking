@@ -1,0 +1,46 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{pub}\PYG{+w}{ }\PYG{k}{fn} \PYG{n+nf}{b}\PYG{o}{\PYGZlt{}}\PYG{n}{T}: \PYG{n+nc}{Sequence}\PYG{o}{\PYGZgt{}}\PYG{p}{(}\PYG{n}{initial}: \PYG{n+nc}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{n}: \PYG{k+kt}{usize}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nb}{Vec}\PYG{o}{\PYGZlt{}}\PYG{n}{T}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{!}\PYG{n}{initial}\PYG{p}{.}\PYG{n}{satisfies\PYGZus{}condition}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nb}{Vec}::\PYG{n}{new}\PYG{p}{();}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{vec}\PYG{o}{!}\PYG{p}{[}\PYG{n}{initial}\PYG{p}{];}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{// all sequences of length n which satisfy the condition}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{results}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{Vec}::\PYG{n}{new}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{c+c1}{// the current sequence, starts with just the initial state}
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{k}{mut}\PYG{+w}{ }\PYG{n}{states}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{Vec}::\PYG{n}{new}\PYG{p}{();}
+
+\PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{steps}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{initial}\PYG{p}{.}\PYG{n}{next\PYGZus{}steps}\PYG{p}{().}\PYG{n}{into\PYGZus{}iter}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{states}\PYG{p}{.}\PYG{n}{push}\PYG{p}{((}\PYG{n}{initial}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{steps}\PYG{p}{));}
+
+\PYG{+w}{    }\PYG{c+c1}{// run while there is still a state with an unchecked possible next step}
+\PYG{+w}{    }\PYG{k}{while}\PYG{+w}{ }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{((}\PYG{n}{state}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{steps}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{states}\PYG{p}{.}\PYG{n}{last\PYGZus{}mut}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{c+c1}{// take the next unchecked possible step of the current state,}
+\PYG{+w}{        }\PYG{c+c1}{// in case there are no unchecked steps left, simply discard the current state}
+\PYG{+w}{        }\PYG{c+c1}{// as all possible sequences have already been tried.}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{n}{step}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{steps}\PYG{p}{.}\PYG{n}{next}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{c+c1}{// compute the result of this step}
+\PYG{+w}{            }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{next\PYGZus{}state}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{state}\PYG{p}{.}\PYG{n}{apply\PYGZus{}step}\PYG{p}{(}\PYG{n}{step}\PYG{p}{);}
+\PYG{+w}{            }\PYG{c+c1}{// does this new state still satisfy the condition,}
+\PYG{+w}{            }\PYG{c+c1}{// if not we can simply discard it}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{next\PYGZus{}state}\PYG{p}{.}\PYG{n}{satisfies\PYGZus{}condition}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{c+c1}{// if the sequence is already n elements long,}
+\PYG{+w}{                }\PYG{c+c1}{// it is correct and can be added to results.}
+\PYG{+w}{                }\PYG{c+c1}{// Otherwise we push it onto the stack.}
+\PYG{+w}{                }\PYG{k}{if}\PYG{+w}{ }\PYG{n}{states}\PYG{p}{.}\PYG{n}{len}\PYG{p}{()}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{next\PYGZus{}steps}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{next\PYGZus{}state}\PYG{p}{.}\PYG{n}{next\PYGZus{}steps}\PYG{p}{().}\PYG{n}{into\PYGZus{}iter}\PYG{p}{();}
+\PYG{+w}{                    }\PYG{n}{states}\PYG{p}{.}\PYG{n}{push}\PYG{p}{((}\PYG{n}{next\PYGZus{}state}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{next\PYGZus{}steps}\PYG{p}{));}
+\PYG{+w}{                }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                    }\PYG{n}{results}\PYG{p}{.}\PYG{n}{push}\PYG{p}{(}\PYG{n}{next\PYGZus{}state}\PYG{p}{);}
+\PYG{+w}{                }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{states}\PYG{p}{.}\PYG{n}{pop}\PYG{p}{();}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n}{results}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

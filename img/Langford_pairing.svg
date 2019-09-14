@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="558" height="243" viewBox="0 0 558 243"
+	 overflow="visible" enable-background="new 0 0 558 243" xml:space="preserve">
+<polyline fill="none" stroke="#0060B6" stroke-width="2" points="387,117 387,45 27,45 27,117 "/>
+<polyline fill="none" stroke="#FFFFFF" stroke-width="8" points="171,117 171,99 459,99 459,117 "/>
+<text transform="matrix(1 0 0 1 15 162)" fill="#0060B6" font-family="Liberation Serif" font-style="normal" font-size="48">4</text>
+<text transform="matrix(1 0 0 1 87 162)" fill="#785000" font-family="Liberation Serif" font-style="normal" font-size="48">1</text>
+<text transform="matrix(1 0 0 1 159 162)" fill="#007833" font-family="Liberation Serif" font-style="normal" font-size="48">3</text>
+<text transform="matrix(1 0 0 1 231.0005 162)" fill="#785000" font-family="Liberation Serif" font-style="normal" font-size="48">1</text>
+<text transform="matrix(1 0 0 1 303 162)" fill="#8F0050" font-family="Liberation Serif" font-style="normal" font-size="48">2</text>
+<text transform="matrix(1 0 0 1 375 162)" fill="#0060B6" font-family="Liberation Serif" font-style="normal" font-size="48">4</text>
+
+<text transform="matrix(1 0 0 1 447 162)" fill="#007833" font-family="Liberation Serif" font-style="normal" font-size="48">3</text>
+<text transform="matrix(1 0 0 1 519 162)" fill="#8F0050" font-family="Liberation Serif" font-style="normal" font-size="48">2</text>
+<polyline fill="none" stroke="#785000" stroke-width="2" points="99,180 99,198 243,198 243,180 "/>
+<text transform="matrix(1 0 0 1 95.7671 225)" fill="#785000" font-family="Liberation Serif" font-style="normal" font-size="21">one position apart</text>
+<polyline fill="none" stroke="#8F0050" stroke-width="2" points="315,180 315,198 531,198 531,180 "/>
+<text transform="matrix(1 0 0 1 352.0918 225)" fill="#8F0050" font-family="Liberation Serif" font-style="normal" font-size="21">two positions apart</text>
+<polyline fill="none" stroke="#007833" stroke-width="2" points="171,117 171,99 459,99 459,117 "/>
+<text transform="matrix(1 0 0 1 184.8564 81)" fill="#007833" font-family="Liberation Serif" font-style="normal" font-size="21">three positions apart</text>
+<text transform="matrix(1 0 0 1 125.3481 27)" fill="#0060B6" font-family="Liberation Serif" font-style="normal" font-size="21">four positions apart</text>
+<rect fill="none" width="558" height="243"/>
+</svg>
+

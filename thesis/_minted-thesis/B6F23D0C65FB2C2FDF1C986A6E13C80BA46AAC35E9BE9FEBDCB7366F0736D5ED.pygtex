@@ -1,0 +1,20 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{l+s+sd}{/// A required set of methods needed for the generic backtracking algorithms.}
+\PYG{k}{pub}\PYG{+w}{ }\PYG{k}{trait}\PYG{+w}{ }\PYG{n}{Sequence}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{type} \PYG{n+nc}{Step}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{type} \PYG{n+nc}{Steps}: \PYG{n+nb}{IntoIterator}\PYG{o}{\PYGZlt{}}\PYG{n}{Item}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{Self}::\PYG{n}{Step}\PYG{o}{\PYGZgt{}}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{l+s+sd}{/// Checks if this sequence satisfies its condition.}
+\PYG{+w}{    }\PYG{l+s+sd}{///}
+\PYG{+w}{    }\PYG{l+s+sd}{/// This function can assume that the  parent of `self` satisfied this condition.}
+\PYG{+w}{    }\PYG{k}{fn} \PYG{n+nf}{satisfies\PYGZus{}condition}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n+nb+bp}{self}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{k+kt}{bool}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{l+s+sd}{/// generates all possible next steps at this current state.}
+\PYG{+w}{    }\PYG{k}{fn} \PYG{n+nf}{next\PYGZus{}steps}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n+nb+bp}{self}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nc}{Self}::\PYG{n}{Steps}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{l+s+sd}{/// applies a `step` to `self`, returning the resulting sequence.}
+\PYG{+w}{    }\PYG{l+s+sd}{///}
+\PYG{+w}{    }\PYG{l+s+sd}{/// this function will only be called if `self.satisfies\PYGZus{}condition() == true`.}
+\PYG{+w}{    }\PYG{k}{fn} \PYG{n+nf}{apply\PYGZus{}step}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{step}: \PYG{n+nc}{Self}::\PYG{n}{Step}\PYG{p}{)}\PYG{+w}{ }\PYGZhy{}\PYGZgt{} \PYG{n+nc}{Self}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
