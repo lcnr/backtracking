@@ -30,11 +30,12 @@ pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
     let steps = initial.next_steps().into_iter();
     states.push((initial, steps));
 
-    // run while there is still a state with an unchecked possible next step
+    // run while there is still a state with an unchecked next step
     while let Some((state, steps)) = states.last_mut() {
         // take the next unchecked possible step of the current state,
-        // in case there are no unchecked steps left, simply discard the current state
-        // as all possible sequences have already been tried.
+        // in case there are no unchecked steps left,
+        // simply discard the current state as all possible
+        // sequences have already been tried.
         if let Some(step) = steps.next() {
             // compute the result of this step
             let next_state = state.apply_step(step);

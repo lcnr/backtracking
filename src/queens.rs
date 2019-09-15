@@ -56,7 +56,7 @@ impl Sequence for Queens {
         0..self.n
     }
 
-    /// clones `self` and adds the queen at `column` in the next free row
+    /// clones `self` and adds the queen at `column` at the next free row
     fn apply_step(&self, column: Self::Step) -> Self {
         let mut rows = self.rows.clone();
         rows.push(column);
@@ -107,7 +107,7 @@ pub fn b_star(n: usize) -> Vec<Queens> {
     loop {
         // test all possible columns
         while column < n {
-            // check if the adding the current position is on an
+            // check if the current position is on an
             // already occupied column or diagonal
             if !(columns[column]
                 || left_diagonals[column + rows.len()]

@@ -15,11 +15,12 @@
 \PYG{+w}{    }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{steps}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{initial}\PYG{p}{.}\PYG{n}{next\PYGZus{}steps}\PYG{p}{().}\PYG{n}{into\PYGZus{}iter}\PYG{p}{();}
 \PYG{+w}{    }\PYG{n}{states}\PYG{p}{.}\PYG{n}{push}\PYG{p}{((}\PYG{n}{initial}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{steps}\PYG{p}{));}
 
-\PYG{+w}{    }\PYG{c+c1}{// run while there is still a state with an unchecked possible next step}
+\PYG{+w}{    }\PYG{c+c1}{// run while there is still a state with an unchecked next step}
 \PYG{+w}{    }\PYG{k}{while}\PYG{+w}{ }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{((}\PYG{n}{state}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{steps}\PYG{p}{))}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{states}\PYG{p}{.}\PYG{n}{last\PYGZus{}mut}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
 \PYG{+w}{        }\PYG{c+c1}{// take the next unchecked possible step of the current state,}
-\PYG{+w}{        }\PYG{c+c1}{// in case there are no unchecked steps left, simply discard the current state}
-\PYG{+w}{        }\PYG{c+c1}{// as all possible sequences have already been tried.}
+\PYG{+w}{        }\PYG{c+c1}{// in case there are no unchecked steps left,}
+\PYG{+w}{        }\PYG{c+c1}{// simply discard the current state as all possible}
+\PYG{+w}{        }\PYG{c+c1}{// sequences have already been tried.}
 \PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nb}{Some}\PYG{p}{(}\PYG{n}{step}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{steps}\PYG{p}{.}\PYG{n}{next}\PYG{p}{()}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
 \PYG{+w}{            }\PYG{c+c1}{// compute the result of this step}
 \PYG{+w}{            }\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n}{next\PYGZus{}state}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{state}\PYG{p}{.}\PYG{n}{apply\PYGZus{}step}\PYG{p}{(}\PYG{n}{step}\PYG{p}{);}

@@ -17,12 +17,17 @@ pub fn e<T: Sequence>(initial: T, n: usize) -> Duration {
     let mut total_length = Duration::from_secs(0);
 
     for _ in 0..n - 1 {
+        // time the duration of calculating all valid next states
         let now = Instant::now();
         let mut next_states = current.next_states();
         next_states.retain(|state| state.satisfies_condition());
         total_length += now.elapsed() * estimated_steps;
 
+        // we expect our current branch to be representative of all
+        // possible branches
         estimated_steps *= next_states.len() as u32;
+
+        // choose a random next state
         if let Some(next) = next_states.into_iter().choose(&mut thread_rng()) {
             current = next;
         } else {

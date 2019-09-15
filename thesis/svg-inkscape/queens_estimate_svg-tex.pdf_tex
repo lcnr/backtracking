@@ -1,0 +1,104 @@
+%% Creator: Inkscape inkscape 0.92.3, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'queens_estimate_svg-tex.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{616.2924917bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.73844322)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{queens_estimate_svg-tex.pdf}}%
+    \put(0.0575187,0.06185203){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 0.01\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{queens_estimate_svg-tex.pdf}}%
+    \put(0.07054009,0.1399804){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 0.1\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{queens_estimate_svg-tex.pdf}}%
+    \put(0.09007218,0.21973624){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 1\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{queens_estimate_svg-tex.pdf}}%
+    \put(0.07705079,0.29786461){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 10\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{queens_estimate_svg-tex.pdf}}%
+    \put(0.06402939,0.37599298){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 100\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{queens_estimate_svg-tex.pdf}}%
+    \put(0.051008,0.45574883){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 1000\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{queens_estimate_svg-tex.pdf}}%
+    \put(0.0379866,0.5338772){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 10000\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{queens_estimate_svg-tex.pdf}}%
+    \put(0.02496521,0.61200589){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 100000\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=9]{queens_estimate_svg-tex.pdf}}%
+    \put(0.04322567,0.69379648){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 1x10\end{tabular}}}}%
+    \put(0.09821051,0.70112107){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}6\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=10]{queens_estimate_svg-tex.pdf}}%
+    \put(0.11041817,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 6\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=11]{queens_estimate_svg-tex.pdf}}%
+    \put(0.20645019,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 7\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=12]{queens_estimate_svg-tex.pdf}}%
+    \put(0.30411147,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 8\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=13]{queens_estimate_svg-tex.pdf}}%
+    \put(0.40177112,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 9\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=14]{queens_estimate_svg-tex.pdf}}%
+    \put(0.49129341,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 10\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=15]{queens_estimate_svg-tex.pdf}}%
+    \put(0.58895468,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 11\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=16]{queens_estimate_svg-tex.pdf}}%
+    \put(0.68661434,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 12\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=17]{queens_estimate_svg-tex.pdf}}%
+    \put(0.78427561,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 13\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=18]{queens_estimate_svg-tex.pdf}}%
+    \put(0.88030779,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 14\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=19]{queens_estimate_svg-tex.pdf}}%
+    \put(0.97796906,0.03743671){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} 15\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=20]{queens_estimate_svg-tex.pdf}}%
+    \put(0.01112991,0.33530133){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Time (ms)\end{tabular}}}}}%
+    \put(0.54907595,-0){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}n\end{tabular}}}}%
+    \put(0.5083843,0.72757081){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}n-Queens\end{tabular}}}}%
+    \put(0.81764283,0.66897453){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Estimate\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=21]{queens_estimate_svg-tex.pdf}}%
+    \put(0.84205815,0.64455938){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Actual\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=22]{queens_estimate_svg-tex.pdf}}%
+  \end{picture}%
+\endgroup%

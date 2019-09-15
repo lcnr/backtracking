@@ -73,19 +73,23 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     let mut position = 0;
 
     // A circular linked list of the length `n + 1` containing all
-    // currently free values. Iterating through this list can simply be
+    // currently free values. Iterating through this list can be
     // done with `ptr = unused_values[ptr]`.
     //
-    // The initial condition is `[1, 2, .., n, 0]`.
+    // The initial state is `[1, 2, .., n, 0]`.
     // If we were to remove the value `2`, this list is updated to
     // `[1, 3, 3, 4, .., n, 0]`, causing the index `2` to be unreachable
     let mut unused_values = (1..=n).collect::<Vec<_>>();
     unused_values.push(0);
 
+    // an array used for backtracking,
+    // works similar to a simple stack without
+    // needing a stack pointer
     let mut undo = vec![0; n * 2];
     let mut ptr = 0;
 
     loop {
+        // do not test elements where the inverse would be out of bounds
         while unused_values[ptr] != 0 && position + unused_values[ptr] + 1 < sequence.len() {
             // check if the current value and its inverse can be inserted,
             // update `ptr` to point to the next value otherwise
@@ -101,15 +105,15 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
                 unused_values[ptr] = unused_values[unused_values[ptr]];
 
                 // go one level deeper, and reset `ptr`
-                // `unused_values[0]` always points to the lowest available number
+                // `unused_values[0]` always points to the smallest available number
                 ptr = 0;
                 position += 1;
 
                 // Check if there are no more available numbers,
                 // as this means that we have used all of them and
                 // thereby found a solution. We do not have to manually undo
-                // this step in case we found a solution, as `unused_values[ptr] == 0`
-                // automatically breaks the inner loop.
+                // this step in case we found a solution, as
+                // `unused_values[ptr] == 0` automatically breaks the inner loop.
                 //
                 // Skip all already filled positions otherwise.
                 if unused_values[ptr] == 0 {
@@ -125,7 +129,8 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
         }
 
         if position != 0 {
-            // set `position` to point to the last positive number
+            // set `position` to point to the
+            // most recently inserted positive number
             position -= 1;
             while sequence[position] < 0 {
                 position -= 1;
@@ -142,9 +147,10 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
             //
             // # Example
             //
-            // that we previously used `2`, `3` and want to undo `3`.
-            // This means that `1`, which previously pointed at `4`, has to point at `3` again.
-            // [1, 4, 3, 4, 5, 0] -> [1, 2, 3, 4, 5, 0]
+            // We previously used `2`, `3` and want to undo `3`.
+            // This means that the index `1`, which currently points at `4`,
+            // has to point at index `3` again.
+            // [1, 4, 3, 4, 5, 0] -> [1, 3, 3, 4, 5, 0]
             unused_values[undo[position]] = removed_value;
 
             // update pointer to point at the free value after the one we have just
