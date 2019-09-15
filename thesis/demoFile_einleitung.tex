@@ -1,7 +1,7 @@
 \chapter{Einleitung}\label{einleitung}
-Es ist oft möglich Probleme als eine Sequenz $x_{1}, x_{2}, x_{3} \dots x_{n}$ für 
-welche die Bedingung $P_{n}(x_{1}, x_{2}, x_{3} \dots x_{n})$ gelten soll darzustellen.
-Damit Backtracking zu deren Lösung eingesetzt werden kann müssen außerdem noch
+Es ist oft möglich, Probleme als eine Sequenz $x_{1}, x_{2}, x_{3} \dots x_{n}$, für 
+welche die Bedingung $P_{n}(x_{1}, x_{2}, x_{3} \dots x_{n})$ gelten soll, darzustellen.
+Damit Backtracking zu deren Lösung eingesetzt werden kann, müssen außerdem noch
 Untereigenschaften $P_{v}(x_{1}, x_{2}, x_{3} \dots x_{v})$ für alle $v \in [ \, 0, n) \,$ 
 mit folgenden Eigenschaften existieren:
 \begin{enumerate}
@@ -12,7 +12,7 @@ mit folgenden Eigenschaften existieren:
 
 Somit kann man alle Sequenzen $x_{1}, x_{2}, x_{3} \dots x_{v} \dots x_{q}$ mit $q > v$ ignorieren,
 falls $P_{v}(x_{1}, x_{2}, x_{3} \dots x_{v})$ nicht gilt.
-Der darauf basierende Backtracking Algorithmus(\textbf{B}) kann nun wie folgt implementiert werden:
+Der darauf basierende Backtracking Algorithmus \textbf{B} kann nun wie folgt implementiert werden:
 \begin{minted}[linenos, fontsize=\small]{rust}
 pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
     if !initial.satisfies_condition() {
@@ -60,7 +60,8 @@ pub fn b<T: Sequence>(initial: T, n: usize) -> Vec<T> {
     results
 }
 \end{minted}
-Um ein Problem mit diesem Algorithmus lösen zu können, benötigt man einen Datentyp welcher den momentanen Zustand
+
+Um ein Problem mit diesem Algorithmus lösen zu können, benötigt man einen Datentyp, welcher den momentanen Zustand
 der Sequenz speichern kann und das folgende Interface implementiert:
 \begin{minted}[linenos, fontsize=\small]{rust}
 /// A required set of methods needed for the generic backtracking algorithms.

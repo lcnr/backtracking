@@ -1,7 +1,7 @@
 \chapter{Queens}
 Eines der bekanntesten Anwendungsmöglichkeiten für Backtracking ist das n-Damen Problem.
 Gesucht wird die Anzahl der Möglichkeiten $n$ Damen auf einem $n * n$ Schachbrett aufzustellen, sodass
-keine Dame von einer anderen bedroht wird. Dies ist gegeben, wenn jede Zeile, Reihe und Spalte jeweils von nur einer Dame
+keine Dame von einer anderen bedroht wird. Dies ist gegeben, wenn jede Zeile, Spalte und Diagonale jeweils von nur einer Dame
 besetzt wird. Abbildung \ref{fig:n4} zeigt sowohl eine korrekte als auch eine inkorrekte Lösung für das Problem.
 \begin{figure}
   \centering
@@ -18,7 +18,7 @@ besetzt wird. Abbildung \ref{fig:n4} zeigt sowohl eine korrekte als auch eine in
 \end{figure}
 
 \section{Implementierung}
-Es dürfen keine 2 Damen in der selben Reihe sein. Eine Mögliche Implementierung ist somit ein Liste in welcher der Eintrag
+Es dürfen keine 2 Damen in der selben Reihe sein. Eine mögliche Implementierung ist somit ein Liste, in welcher der Eintrag
 $n$ die Position der Dame in der $n$-ten Reihe representiert. Der Initialzustand beim Backtracking ist ein leeres Schachbrett.
 \begin{minted}[fontsize=\small, linenos]{rust}
 pub struct Queens {
@@ -89,7 +89,7 @@ Es gibt noch viele Möglichkeiten diese Lösung zu optimieren. Knuth verwendet e
 \subsection{Bitsets}
 Die bisherige Lösung muss bei jeder neuen Dame alle vorherigen Damen einzeln überprüfen. Eine 
 andere Option ist für jede Spalte und Diagonale zu speichern, ob sie momentan besetzt ist.
-Man benötigt so etwas mehr Speicherplatz, reduziert aber die Anzahl der benötigten Speicherzugriffe gewaltig. 
+Man benötigt so etwas mehr Speicherplatz, reduziert aber die Anzahl der Speicherzugriffe gewaltig. 
 Das kann durch 3 Bitsets mit der Verteilung aus Abbildung \ref{bitsets} implementiert werden.
 \begin{figure}
   \centering
@@ -182,21 +182,21 @@ pub fn b_star(n: usize) -> Vec<Queens> {
   \caption{$n$-Queens Benchmark, logarithmischer Maßstab }
 \end{figure}
 \chapter{Langford Pairs}
-Wir suchen mach allen Permutationen der Menge $M = \{1, -1, 2, -2, \dots, n, -n\}$ für die gilt $x_l = p \Rightarrow x_{l+p+1} = -p$.
-Eine der 2 möglichen Lösung für $n = 4$ ist in Abbildung \ref{langford} zu sehen.
+Wir suchen nach allen Permutationen der Menge $M = \{1, -1, 2, -2, \dots, n, -n\}$ für die gilt $x_l = p \Rightarrow x_{l+p+1} = -p$.
+Eine der zwei möglichen Lösungen für $n = 4$ ist in Abbildung \ref{langford} zu sehen.
 \begin{figure}
   \centering
   \includesvg[width=\linewidth]{../img/Langford_pairing}
   \caption{{Langford Pairs \cite{WikipediaEN:LFP}}}
   \label{langford}
 \end{figure}
-Während es auch hier simpel ist Algorithmus \textbf{B} für dieses Problem zu verwenden\cite[{src/langford.rs}]{Kauschke}, gibt es einige
-Möglichkeiten um die Berechnung zu beschleunigen.
+Algorithmus \textbf{B} kann auch hier eingesetzt werden\cite[{src/langford.rs}]{Kauschke}. Jedoch gibt es einige
+Möglichkeiten, die Berechnung zu beschleunigen.
 
-\section{Verwendete Optimisierungen}
-Wie schon beim $n$-Damen Problem kann auch hier das Kopieren des Zustands umgangen werden. Um effizient auf noch nicht
+\section{Verwendete Optimierungen}
+Wie schon beim $n$-Damen Problem kann das Kopieren des Zustands umgangen werden. Um effizient auf noch nicht
 verwendete Elemente zuzugreifen, werden die Arrays \mintinline{rust}{unused_values} und \mintinline{rust}{undo} verwendet.
-Es ist außerdem möglich nur die positiven Elemente zu testen und immer automatisch das Inverse Element an der zugehörigen Stelle zu
+Es ist außerdem möglich nur die positiven Elemente zu testen und immer automatisch das inverse Element an der zugehörigen Stelle zu
 plazieren.
 
 \section{Implementierung}
@@ -207,18 +207,18 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
     let mut sequence = vec![0; n * 2];
     let mut position = 0;
 
-    // A circular linked list of the length `n + 1` containing all
+    // A circular linked list of length `n + 1` containing all
     // currently free values. Iterating through this list can be
     // done with `ptr = unused_values[ptr]`.
     //
     // The initial state is `[1, 2, .., n, 0]`.
-    // If we were to remove the value `2`, this list is updated to
+    // If we remove the value `2`, this list is updated to
     // `[1, 3, 3, 4, .., n, 0]`, causing the index `2` to be unreachable
     let mut unused_values = (1..=n).collect::<Vec<_>>();
     unused_values.push(0);
 
     // an array used for backtracking,
-    // works similar to a simple stack without
+    // works similar to a stack without
     // needing a stack pointer
     let mut undo = vec![0; n * 2];
     let mut ptr = 0;
@@ -294,7 +294,7 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
             unused_values[undo[position]] = removed_value;
 
             // update pointer to point at the free value after the 
-            // one we have just removed from `sequence`.
+            // one we have just removed from `sequence`
             ptr = removed_value;
         } else {
             return results;
@@ -309,15 +309,15 @@ pub fn l(n: usize) -> Vec<Vec<isize>> {
 \end{figure}
 \chapter{Laufzeitprognose}
 
-Viele Anwendung von Backtracking haben oft eine Laufzeit von mehreren Stunden oder länger.
-Unter diesen Bedingungen ist es oft hilfreich in Vorraus zu wissen, wielang das Ausführen
-des Programms dauern wird. Eine Möglichkeit ist zufällige Wählen von $x_{i}$ für welches
+Viele Anwendungen von Backtracking haben eine Laufzeit von mehreren Stunden oder länger.
+Unter diesen Bedingungen ist es hilfreich im Voraus zu wissen, wie lange das Ausführen
+des Programms dauern wird. Eine Möglichkeit ist zufälliges Wählen eines $x_{i}$ für alle $i < n$ für welches
 $P_{i}(x_{1}, x_{2} \dots x_{i})$ gilt. Mann geht nun davon aus,
-das für andere Teilsequenzen gleicher Länge die selbe Anzahl an möglichen $x_{i}$ existiert.
+dass für andere Teilsequenzen gleicher Länge die selbe Anzahl an möglichen $x_{i}$ existiert.
 
 Somit sollte die Gesamtdauer in der Tiefe $i$ gleich der benötigten Zeit zum Finden aller
-möglichen $x_{i}$ für die momentane Teilsequenz multipliziert mit der erwarteten Anzahl aller $x_{i}$.
-Dies lässt sich als Algorithmus \textbf{E} wie folgt implementieren:
+möglichen $x_{i}$ für die momentane Teilsequenz multipliziert mit der erwarteten Anzahl aller $x_{i-1}$ sein.
+Das Einschätzen der Gesamtlaufzeit lässt sich nun als Algorithmus \textbf{E} implementieren:
 \begin{minted}[fontsize=\small, linenos]{rust}
 pub fn e<T: Sequence>(initial: T, n: usize) -> Duration {
     let mut current = initial;
@@ -355,10 +355,10 @@ pub fn e<T: Sequence>(initial: T, n: usize) -> Duration {
 }
 \end{minted}
 
-Da Algorithmus \textbf{E} nur eine einzige Möglichkeit testet, kann die erwartete Laufzeit
-sehr stark schwanken. Indem man diesen Algorithmus mehrmals hintereinander aufruft und
-den Durchschnitt berechnet, lassen sich diese Schwankungen ausgleichen und man
-erhält meistens eine recht genaue Vorhersage.
+Da Algorithmus \textbf{E} nur eine einzige Schrittfolge testet, kann das Ergebnis
+sehr stark variieren. Indem man diesen Algorithmus mehrmals hintereinander aufruft und
+den Durchschnitt berechnet, lassen sich diese Schwankungen ausgleichen. Somit erhält man
+meistens eine recht genaue Vorhersage.
 \begin{minted}[fontsize=\small, linenos]{rust}
 pub fn repeated_estimate<T: Sequence + Clone>(
     initial: T, n: usize,
@@ -373,8 +373,8 @@ pub fn repeated_estimate<T: Sequence + Clone>(
     total_duration / repetitions
 }
 \end{minted}
-Diese Prognose war sowohl beim $n$-Damen Problem als auch bei den Langford Paaren immer
-in der selben Größenordnung wie die tatsächliche Laufzeit, wie man in Abbildung \ref{estimate} gut sehen kann.
+Die durch \mintinline{rust}{fn repeated_estimate} erhaltene Prognose war sowohl beim $n$-Damen Problem, als auch bei den Langford Paaren, immer
+in derselben Größenordnung wie die tatsächliche Laufzeit. Dies kann man in Abbildung \ref{estimate} gut sehen.
 \begin{figure}
     \centering
     \includesvg[width=\textwidth]{../img/queens_estimate}
